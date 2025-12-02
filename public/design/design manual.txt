@@ -1,0 +1,45 @@
+Corporate Design Guide
+Grundstimmung & Vibe
+Keywords: Steril, Mächtig, Kühl, Bürokratisch, High-Tech.
+Do: Symmetrie, viel Weißraum (oder „Dark-Space“), klare Linien.
+Don't: Verspielte Elemente, runde „freundliche“ Formen, warme gemütliche Farben, handgeschriebene Fonts.
+
+1 Farbpalette & Verwendung
+Die Farben dienen dazu, eine Atmosphäre von kühler Professionalität zu schaffen. Wir nutzen die Farbpsychologie, um Autorität auszustrahlen. Neben diesen Farben können auch Scharz und Weiß genutzt werden.
+1.1 Hintergründe:
+Nutzt Yale Blue (sehr dunekles blau) (#223E54) und Air Force Blue (#5A7E8E) für große Flächen und Sektions-Hintergründe. Diese Farben erzeugen Tiefe und Dunkelheit, ohne reines Schwarz zu sein.
+1.2 Akzente & Technik (Der sterile Labor-Look):
+Verwendet Pale Sky (sehr helles blau) (#A8DADC) für technische Linien, Rahmen, Icons oder um Textbereiche vom dunklen Hintergrund abzuheben.
+1.3 Textfarben:
+Auf dunklen Hintergründen: Pale Sky (#A8DADC) für maximale Lesbarkeit.
+Auf hellen Hintergründen: Yale Blue (#223E54).
+1.4 Signal & Call-to-Action (Der „Rote Knopf“):
+Nutzt Flag Red (#DB162F) ausschließlich für Interaktionselemente, die eine sofortige Handlung erfordern (Buttons wie „Jetzt bewerben“, „Welt zerstören“, „Kontakt aufnehmen“). Dieses Rot ist unser Warnsignal – sparsam, aber wirkungsvoll einsetzen.
+
+
+2 Typografie
+Wir nutzen einen starken Kontrast zwischen lauten Überschriften und bürokratischem Fließtext.
+2.1 Überschriften (Headlines): Dela Gothic One
+- Wirkung: Schwer, blockartig, unmissverständlich. Wie ein Stempel auf einem geheimen Dokument.
+- Anwendung: Für H1, H2 und wichtige Claims.
+- Styling: Nutzt diesen Font groß. Er darf "schreien". Buchstabenabstand (Letter-spacing) kann leicht verringert werden, um Kompaktheit zu erzeugen.
+2.2 Fließtext (Body): Roboto
+- Wirkung: Neutral, gut lesbar, technisch, effizient. Die Schriftart der modernen Verwaltung.
+- Anwendung: Für alle längeren Texte, Jobbeschreibungen, Formularfelder und Navigation.
+- Styling: Nutzt verschiedene Schriftschnitte (Light, Regular, Bold) der Roboto, um innerhalb der Texte Hierarchien zu schaffen (z.B. Bold für wichtige Warnhinweise in Jobbeschreibungen).
+
+3 Logo-Einsatz
+- Platzierung: Das Logo (Krake um Weltkugel) muss immer genügend „Schutzraum“ (Padding) um sich herum haben. Es darf nicht von anderen Elementen bedrängt werden.
+- Verwendung: Auf dunklen Hintergründen nutzen wir die helle/weiße Variante des Logos, auf hellen Hintergründen die dunkle Variante.
+- Favicon: Nutzt nur den Krakenkopf oder den Kraken mit Weltkugel ohne Text als Favicon für den Browser-Tab
+
+UI-Elemente (User Interface)
+Formen: Wir nutzen scharfe Kanten oder nur sehr minimale Eckenrundungen (max. 2-4px). Nichts soll „weich“ wirken.
+Buttons:
+Primary Button: Signal Red Hintergrund, weiße Schrift (Roboto Bold), keine abgerundeten Ecken. Soll aussehen wie ein Knopf, den man eigentlich nicht drücken darf.
+Secondary Button: Transparenter Hintergrund, 1px Rahmen in Icy Blue, Text in Icy Blue.
+Container & Cards: Nutzt den „Glassmorphism“-Effekt (Milchglas-Optik) für Textboxen auf Bildhintergründen: Halbtransparenter dunkler Hintergrund mit einem feinen, hellen Rahmen (Platinum), um High-Tech-Displays zu simulieren.
+
+Interaktion (Hover-States)
+Wenn der Nutzer über einen Button oder ein interaktives Element fährt (Hover), soll das Feedback präzise und technisch wirken.
+Beispiel: Buttons könnten beim Hover leicht „aufleuchten“ (helleres Rot) oder einen harten Schatten werfen, als würde man sie physisch drücken.

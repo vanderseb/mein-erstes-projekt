@@ -1,13 +1,64 @@
+<script setup lang="ts">
+// Impressum-Seite
+</script>
+
 <template>
-  <div>
-    <NuxtRouteAnnouncer />
-    <h1>Impressum</h1>
-    <p>Dr. Evil & Söhne GmbH</p>
-    <p>Max Mustermann</p>
-    <p>Mustermannstraße 1</p>
-    <p>12345 Mustermann</p>
-    <p>Telefon: 0123456789</p>
-    <p>E-Mail: info@mustermann.de</p>
-    <p>Internet: https://www.mustermann.de</p>
+  <div class="py-16 md:py-24 px-4">
+    <div class="max-w-3xl mx-auto">
+      
+      <h1 class="text-white mb-8">Impressum</h1>
+      
+      <GlassCard padding="lg">
+        <div class="space-y-6 text-evil-light">
+          
+          <div>
+            <h3 class="text-white text-lg mb-2">Angaben gemäß § 5 TMG</h3>
+            <p>Dr. Evil & Söhne GmbH</p>
+            <p>(Gesellschaft mit begrenzter Humanität)</p>
+          </div>
+          
+          <div>
+            <h3 class="text-white text-lg mb-2">Vertreten durch</h3>
+            <p>Dr. Evil Jr. (Geschäftsführer)</p>
+            <p>Mini-Me Evil (Prokurist)</p>
+          </div>
+          
+          <div>
+            <h3 class="text-white text-lg mb-2">Anschrift</h3>
+            <p>Vulkaninsel 1</p>
+            <p>00000 Geheimstandort</p>
+            <p>Internationale Gewässer</p>
+          </div>
+          
+          <div>
+            <h3 class="text-white text-lg mb-2">Kontakt</h3>
+            <p>Telefon: +49 (0) 666 - EVIL</p>
+            <p>E-Mail: impressum@dr-evil.de</p>
+          </div>
+          
+          <div>
+            <h3 class="text-white text-lg mb-2">Registereintrag</h3>
+            <p>Eintragung im Handelsregister</p>
+            <p>Registergericht: Amtsgericht Vulkaninsel</p>
+            <p>Registernummer: HRB 666</p>
+          </div>
+          
+          <div>
+            <h3 class="text-white text-lg mb-2">Umsatzsteuer-ID</h3>
+            <p>Umsatzsteuer-Identifikationsnummer gemäß §27 a Umsatzsteuergesetz:</p>
+            <p>DE 666 666 666</p>
+          </div>
+          
+          <div class="border-t border-evil-light/20 pt-6 mt-6">
+            <p class="text-evil-mid text-sm">
+              Hinweis: Diese Webseite ist ein fiktives Projekt zu Lernzwecken. 
+              Alle Angaben sind erfunden und dienen der Unterhaltung.
+            </p>
+          </div>
+          
+        </div>
+      </GlassCard>
+      
+    </div>
   </div>
 </template>

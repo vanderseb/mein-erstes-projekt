@@ -2,7 +2,7 @@
 const { jobScores, evilScore } = useEvilState();
 const { jobs } = useJobs();
 
-// Logik bleibt gleich: Sortieren nach Score
+// Jobs nach Score sortieren
 const rankedJobs = computed(() => {
   return jobs.map(job => ({
     ...job,
@@ -14,32 +14,59 @@ const winner = computed(() => rankedJobs.value[0]);
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-900 text-white flex items-center justify-center p-4">
-    <div class="max-w-md w-full space-y-8 text-center">
+  <div class="min-h-screen py-12 px-4 flex items-center justify-center">
+    <div class="max-w-lg w-full space-y-6">
 
-      <div>
-        <h1 class="text-2xl font-bold">Ergebnis</h1>
-        <p class="text-gray-400">Evil Score: <span class="text-red-500 font-bold">{{ evilScore }}</span></p>
+      <!-- Score Display -->
+      <div class="text-center">
+        <h1 class="text-white text-3xl mb-2">Dein Ergebnis</h1>
+        <p class="text-evil-mid">
+          Evil Score: <span class="text-evil-red font-bold text-2xl">{{ evilScore }}</span>
+        </p>
       </div>
 
-      <div class="p-6 rounded bg-gray-800">
-        <h2 class="text-xl font-bold mb-2 text-red-500">{{ winner.title }}</h2>
-        <p class="text-sm text-gray-300 mb-6">{{ winner.description }}</p>
+      <!-- Winner Card -->
+      <GlassCard padding="lg" class="text-center border-evil-red/50">
+        <p class="text-evil-mid text-sm uppercase tracking-wider mb-2">Dein perfekter Job</p>
+        <h2 class="text-evil-red text-2xl mb-3">{{ winner.title }}</h2>
+        <p class="text-evil-light/80 text-sm mb-6">{{ winner.description }}</p>
         
-        <NuxtLink :to="`/jeopardy/form?job=${winner.id}`" class="block w-full bg-red-600 py-2 rounded font-bold hover:bg-red-700">
+        <BaseButton :href="`/jeopardy/form?job=${winner.id}`" class="w-full text-center">
           Job annehmen
-        </NuxtLink>
-      </div>
+        </BaseButton>
+      </GlassCard>
 
-      <div class="text-left text-sm space-y-2">
-        <p class="text-gray-500 uppercase font-bold text-xs">Alternativen:</p>
+      <!-- Alternatives -->
+      <GlassCard>
+        <p class="text-evil-mid text-xs uppercase tracking-wider font-bold mb-4">
+          Alternativen
+        </p>
         
-        <div v-for="job in rankedJobs.slice(1)" :key="job.id" class="flex justify-between border-b border-gray-700 pb-1">
-          <span>{{ job.title }} <span class="text-gray-500">({{ job.score }})</span></span>
-          <NuxtLink :to="`/jeopardy/form?job=${job.id}`" class="text-red-400 hover:text-white">
-            Wählen
-          </NuxtLink>
+        <div class="space-y-3">
+          <div 
+            v-for="job in rankedJobs.slice(1)" 
+            :key="job.id" 
+            class="flex items-center justify-between py-2 border-b border-evil-light/10 last:border-0"
+          >
+            <div>
+              <span class="text-evil-light text-sm">{{ job.title }}</span>
+              <span class="text-evil-mid text-xs ml-2">({{ job.score }} Punkte)</span>
+            </div>
+            <NuxtLink 
+              :to="`/jeopardy/form?job=${job.id}`" 
+              class="text-evil-red text-sm hover:text-white transition-colors"
+            >
+              Wählen
+            </NuxtLink>
+          </div>
         </div>
+      </GlassCard>
+
+      <!-- Back Link -->
+      <div class="text-center">
+        <NuxtLink to="/karriere" class="text-evil-mid text-sm hover:text-evil-light transition-colors">
+          ← Zurück zur Karriereübersicht
+        </NuxtLink>
       </div>
 
     </div>

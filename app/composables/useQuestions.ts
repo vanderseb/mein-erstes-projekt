@@ -22,9 +22,9 @@ export const useQuestions = () => {
             text: "Das Fahrstuhl-Dilemma: Kollege rennt zum Fahrstuhl. Was tun?", // [cite: 72, 73]
             type: 'radio',
             options: [
-                { label: "Ich drücke sofort 'Tür öffnen'. (-1 Evil Score)", evilPoints: -1 }, // [cite: 74]
-                { label: "Ich tue so, als würde ich suchen. (+1 Evil Score)", evilPoints: 1 }, // [cite: 75]
-                { label: "Ich drücke demonstrativ 'Tür schließen'. (+2 Evil Score)", evilPoints: 2 } // [cite: 76]
+                { label: "Ich drücke sofort 'Tür öffnen'.", evilPoints: -1 }, // [cite: 74]
+                { label: "Ich tue so, als würde ich suchen.", evilPoints: 1 }, // [cite: 75]
+                { label: "Ich drücke demonstrativ 'Tür schließen'.", evilPoints: 2 } // [cite: 76]
             ]
         },
         {
@@ -32,9 +32,9 @@ export const useQuestions = () => {
             text: "Der Pausenraum-Zwischenfall: Joghurt mit Name 'LISA'.", // [cite: 77, 78]
             type: 'radio',
             options: [
-                { label: "Stehen lassen. (-1 Evil Score)", evilPoints: -1 }, // [cite: 79]
-                { label: "Essen und Müll verstecken. (+1 Evil Score)", evilPoints: 1 }, // [cite: 80]
-                { label: "Hälfte essen, 'War lecker' draufschreiben. (+2 Evil Score)", evilPoints: 2 } // [cite: 81]
+                { label: "Stehen lassen.", evilPoints: -1 }, // [cite: 79]
+                { label: "Essen und Müll verstecken.", evilPoints: 1 }, // [cite: 80]
+                { label: "Hälfte essen, 'War lecker' draufschreiben.", evilPoints: 2 } // [cite: 81]
             ]
         },
         {
@@ -42,9 +42,9 @@ export const useQuestions = () => {
             text: "Supermarkt-Strategie: Alte Dame mit 2 Artikeln hinter Ihnen.", // [cite: 82, 83]
             type: 'radio',
             options: [
-                { label: "Vorlassen. (-1 Evil Score)", evilPoints: -1 }, // [cite: 84]
-                { label: "Ignorieren. (+1 Evil Score)", evilPoints: 1 }, // [cite: 85]
-                { label: "Fragen ob eilig, dann mit Kleingeld zahlen. (+2 Evil Score)", evilPoints: 2 } // [cite: 86]
+                { label: "Vorlassen.", evilPoints: -1 }, // [cite: 84]
+                { label: "Ignorieren.", evilPoints: 1 }, // [cite: 85]
+                { label: "Fragen ob eilig, dann mit Kleingeld zahlen.", evilPoints: 2 } // [cite: 86]
             ]
         }
     ];

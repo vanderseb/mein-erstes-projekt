@@ -24,8 +24,11 @@ export const useEvilState = () => {
             evilScore.value += option.evilPoints;
         }
         // 2. Job Score updaten
-        if (option.jobScore && jobScores.value[option.jobScore] !== undefined) {
-            jobScores.value[option.jobScore] += 1;
+        const scores = jobScores.value;
+        const jobKey = option.jobScore;
+
+        if (jobKey && scores && typeof scores[jobKey] === 'number') {
+            scores[jobKey] += 1;
         }
     };
 

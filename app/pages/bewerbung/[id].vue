@@ -46,7 +46,7 @@ const submitApplication = () => {
       
       <h2 class="text-sm font-bold uppercase text-gray-400 mb-2">Bewerbung für {{ job.title }}</h2>
       
-      <div v-if="!showAdminForm">
+      <div v-if="!showAdminForm && currentQuestion">
         <div class="mb-4 text-right text-xs text-gray-400">
           Frage {{ step + 1 }} von {{ allApplicationQuestions.length }}
         </div>

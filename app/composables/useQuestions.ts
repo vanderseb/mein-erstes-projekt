@@ -19,7 +19,7 @@ export const useQuestions = () => {
     const personalityQuestions: Question[] = [
         {
             id: 'p1',
-            text: "Das Fahrstuhl-Dilemma: Kollege rennt zum Fahrstuhl. Was tun?", // [cite: 72, 73]
+            text: "Das Fahrstuhl-Dilemma: Sie stehen allein im Fahrstuhl. Die Türen schließen sich gerade. In der Ferne sehen Sie einen Kollegen rennen, der den Fahrstuhl noch erreichen möchte. Er ruft 'Warten!'. Was tun Sie?", // [cite: 72, 73]
             type: 'radio',
             options: [
                 { label: "Ich drücke sofort 'Tür öffnen'.", evilPoints: -1 }, // [cite: 74]
@@ -29,7 +29,7 @@ export const useQuestions = () => {
         },
         {
             id: 'p2',
-            text: "Der Pausenraum-Zwischenfall: Joghurt mit Name 'LISA'.", // [cite: 77, 78]
+            text: "Der Pausenraum-Zwischenfall: Im gemeinschaftlichen Kühlschrank steht ein Joghurt. Auf dem Deckel steht groß und deutlich 'LISA'. Sie haben Hunger und keinen eigenen Joghurt dabei.", // [cite: 77, 78]
             type: 'radio',
             options: [
                 { label: "Stehen lassen.", evilPoints: -1 }, // [cite: 79]
@@ -39,12 +39,12 @@ export const useQuestions = () => {
         },
         {
             id: 'p3',
-            text: "Supermarkt-Strategie: Alte Dame mit 2 Artikeln hinter Ihnen.", // [cite: 82, 83]
+            text: "Supermarkt-Strategie: Sie stehen an der Kasse im Supermarkt. Eine alte Dame hinter Ihnen hat nur zwei Artikel in der Hand. Sie haben einen vollen Einkaufswagen.", // [cite: 82, 83]
             type: 'radio',
             options: [
                 { label: "Vorlassen.", evilPoints: -1 }, // [cite: 84]
                 { label: "Ignorieren.", evilPoints: 1 }, // [cite: 85]
-                { label: "Fragen ob eilig, dann mit Kleingeld zahlen.", evilPoints: 2 } // [cite: 86]
+                { label: "Besonders langsam mit Kleingeld zahlen.", evilPoints: 2 } // [cite: 86]
             ]
         }
     ];
@@ -53,7 +53,7 @@ export const useQuestions = () => {
     const knowledgeQuestions: Question[] = [
         {
             id: 'k1',
-            text: "Facility: Wie viele Liter organische Flüssigkeit nach Falltür-Malheur?", // [cite: 90]
+            text: "Wie viele Liter organische Flüssigkeit nach Falltür-Malheur?", // [cite: 90]
             type: 'radio',
             options: [
                 { label: "5 bis 7 Liter", jobScore: 'facility' }, // [cite: 91]
@@ -63,7 +63,7 @@ export const useQuestions = () => {
         },
         {
             id: 'k2',
-            text: "R&D: Laser-Laufzeit Mond bis Weißes Haus?", // [cite: 95]
+            text: "Laser-Laufzeit Mond bis Weißes Haus?", // [cite: 95]
             type: 'radio',
             options: [
                 { label: "1,1 Minute" },
@@ -73,7 +73,7 @@ export const useQuestions = () => {
         },
         {
             id: 'k3',
-            text: "IT: Wie schnell wird Passwort '12345' geknackt?", // [cite: 100]
+            text: "Wie schnell wird Passwort '12345' geknackt?", // [cite: 100]
             type: 'radio',
             options: [
                 { label: "Sofort", jobScore: 'it' }, // [cite: 101]
@@ -83,7 +83,7 @@ export const useQuestions = () => {
         },
         {
             id: 'k4',
-            text: "Finanzen: Wie viel Gold lagert in Fort Knox?", // [cite: 105]
+            text: "Wie viel Gold lagert in Fort Knox?", // [cite: 105]
             type: 'radio',
             options: [
                 { label: "934,7 Mrd. Unzen" },
@@ -93,7 +93,7 @@ export const useQuestions = () => {
         },
         {
             id: 'k5',
-            text: "HR: Dunbar-Zahl (stabile soziale Beziehungen)?", // [cite: 110]
+            text: "Dunbar-Zahl (stabile soziale Beziehungen)?", // [cite: 110]
             type: 'radio',
             options: [
                 { label: "ca. 50 Personen" },
@@ -103,14 +103,14 @@ export const useQuestions = () => {
         },
         {
             id: 'k6', // Die große Szenario Frage [cite: 114]
-            text: "Evakuierung: Was retten Sie mit zwei freien Händen?",
+            text: "Es Brennt.Was retten Sie aus dem Gebäude?",
             type: 'radio',
             options: [
-                { label: "Koffer mit Inhaberaktien", jobScore: 'finance' }, // [cite: 117]
-                { label: "Backup-Festplatten & Browser-History", jobScore: 'it' }, // [cite: 119]
-                { label: "Prototyp 'Schrumpf-o-mat 3000'", jobScore: 'rd' }, // [cite: 121]
-                { label: "Kontaktliste der Söldner", jobScore: 'hr' }, // [cite: 122]
-                { label: "Antiker Perser-Teppich (Blutflecken)", jobScore: 'facility' } // [cite: 123]
+                { label: "Den Koffer mit den nicht-nummerierten Inhaberaktien und dem Schwarzgeld.", jobScore: 'finance' }, // [cite: 117]
+                { label: "Die Backup-Festplatten mit den Erpressungsdaten (und der Browser-History des Chefs).", jobScore: 'it' }, // [cite: 119]
+                { label: "Den einzigen funktionierenden Prototypen des 'Schrumpf-o-mat 3000'.", jobScore: 'rd' }, // [cite: 121]
+                { label: "Die Kontaktliste der Reserve-Söldner (gutes Personal ist schwer zu finden).", jobScore: 'hr' }, // [cite: 122]
+                { label: "Den antiken Perser-Teppich aus dem Chefbüro (Blutflecken gehen da so schwer raus).", jobScore: 'facility' } // [cite: 123]
             ]
         }
     ];

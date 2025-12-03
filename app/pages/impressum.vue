@@ -8,7 +8,7 @@
       
       <h1 class="text-white mb-8">Impressum</h1>
       
-      <GlassCard padding="lg">
+      <ContentCard padding="lg">
         <div class="space-y-6 text-evil-light">
           
           <div>
@@ -57,7 +57,7 @@
           </div>
           
         </div>
-      </GlassCard>
+      </ContentCard>
       
     </div>
   </div>

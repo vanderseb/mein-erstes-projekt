@@ -16,7 +16,7 @@ const selectAnswer = (option: any) => {
   if (step.value < allApplicationQuestions.length - 1) {
     step.value++;
   } else {
-    router.push('/jeopardy/result');
+    router.push('/quiz/result');
   }
 };
 </script>
@@ -25,7 +25,7 @@ const selectAnswer = (option: any) => {
   <div class="min-h-screen py-12 px-4 flex items-center justify-center">
     <div class="max-w-xl w-full">
       
-      <GlassCard padding="lg">
+      <ContentCard padding="lg">
         
         <!-- Header -->
         <div class="text-center mb-8">
@@ -65,7 +65,7 @@ const selectAnswer = (option: any) => {
           </div>
         </div>
         
-      </GlassCard>
+      </ContentCard>
       
     </div>
   </div>

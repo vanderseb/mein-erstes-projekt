@@ -63,10 +63,13 @@ body {
    -------------------------------------------------------------------------- */
 
 /* Headlines - Dela Gothic One */
-h1, h2, h3 {
+h1,
+h2,
+h3 {
   font-family: 'Dela Gothic One', sans-serif;
   font-weight: 400;
-  letter-spacing: -0.02em; /* Leicht komprimiert lt. Design Manual */
+  letter-spacing: -0.02em;
+  /* Leicht komprimiert lt. Design Manual */
   line-height: 1.1;
 }
 
@@ -83,7 +86,10 @@ h3 {
 }
 
 /* Body Text */
-p, li, span, label {
+p,
+li,
+span,
+label {
   font-family: 'Roboto', sans-serif;
 }
 
@@ -127,4 +133,3 @@ a:hover {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--evil-light);
 }
-

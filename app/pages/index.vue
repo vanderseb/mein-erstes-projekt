@@ -81,29 +81,29 @@
 
         <div class="grid md:grid-cols-3 gap-6">
           
-          <GlassCard>
+          <ContentCard>
             <h3 class="text-white text-lg mb-3">Wetterkontrollsysteme</h3>
             <p class="text-evil-light/80 text-sm">
               Warum auf die Sonne warten, wenn Sie Hagelstürme im Abonnement bestellen können? 
               Perfekt für Erpressungen von G7-Gipfeln.
             </p>
-          </GlassCard>
+          </ContentCard>
 
-          <GlassCard>
+          <ContentCard>
             <h3 class="text-white text-lg mb-3">Lasertechnologie</h3>
             <p class="text-evil-light/80 text-sm">
               Ob auf Haien montiert oder auf dem Mond stationiert – unsere Laser bieten 
               präzise Zerstörungskraft mit minimalem CO2-Fußabdruck.
             </p>
-          </GlassCard>
+          </ContentCard>
 
-          <GlassCard>
+          <ContentCard>
             <h3 class="text-white text-lg mb-3">Doomsday-Infrastruktur</h3>
             <p class="text-evil-light/80 text-sm">
               Von der hydraulischen Falltür bis zum schallisolierten Verließ – 
               wir bauen Lösungen für die Ewigkeit.
             </p>
-          </GlassCard>
+          </ContentCard>
 
         </div>
 

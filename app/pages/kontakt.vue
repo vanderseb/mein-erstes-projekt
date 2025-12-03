@@ -18,7 +18,7 @@
         <div class="grid md:grid-cols-2 gap-8">
           
           <!-- Kontaktdaten -->
-          <GlassCard padding="lg">
+          <ContentCard padding="lg">
             <h2 class="text-white text-2xl mb-6">So erreichen Sie uns</h2>
             
             <div class="space-y-4 text-evil-light">
@@ -45,10 +45,10 @@
                 <p class="text-evil-mid text-sm">(Vulkanausbrüche ausgenommen)</p>
               </div>
             </div>
-          </GlassCard>
+          </ContentCard>
           
           <!-- Hinweis -->
-          <GlassCard padding="lg">
+          <ContentCard padding="lg">
             <h2 class="text-white text-2xl mb-6">Wichtiger Hinweis</h2>
             
             <div class="space-y-4 text-evil-light/90">
@@ -71,7 +71,7 @@
                 Zur Karriereseite
               </BaseButton>
             </div>
-          </GlassCard>
+          </ContentCard>
           
         </div>
 

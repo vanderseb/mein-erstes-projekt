@@ -10,7 +10,7 @@ const job = getJobById(jobId);
 const adminData = ref<Record<string, string>>({});
 
 const submit = () => {
-  console.log("Jeopardy Bewerbung:", {
+  console.log("Quiz Bewerbung:", {
     job: job?.title,
     evilScore: evilScore.value,
     data: adminData.value
@@ -24,7 +24,7 @@ const submit = () => {
   <div class="min-h-screen py-12 px-4 flex items-center justify-center">
     <div class="max-w-lg w-full">
       
-      <GlassCard v-if="job" padding="lg">
+      <ContentCard v-if="job" padding="lg">
         
         <!-- Header -->
         <div class="mb-8">
@@ -59,15 +59,15 @@ const submit = () => {
           Absenden
         </BaseButton>
         
-      </GlassCard>
+      </ContentCard>
 
       <!-- Fallback wenn kein Job -->
-      <GlassCard v-else padding="lg" class="text-center">
+      <ContentCard v-else padding="lg" class="text-center">
         <p class="text-evil-mid mb-4">Kein Job ausgewählt.</p>
-        <BaseButton href="/jeopardy" variant="secondary">
+        <BaseButton href="/quiz" variant="secondary">
           Zum Test
         </BaseButton>
-      </GlassCard>
+      </ContentCard>
       
     </div>
   </div>

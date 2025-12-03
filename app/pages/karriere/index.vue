@@ -15,15 +15,15 @@ const { jobs } = useJobs();
     <!-- Evil Score CTA -->
     <section class="py-12 px-4">
       <div class="max-w-4xl mx-auto">
-        <GlassCard padding="lg" class="text-center">
+        <ContentCard padding="lg" class="text-center">
           <h2 class="text-white mb-4">Unsicher, wie böse du bist?</h2>
           <p class="text-evil-light/80 mb-6">
             Finde deinen perfekten Job in unserem wissenschaftlich fragwürdigen Eignungstest.
           </p>
-          <BaseButton href="/jeopardy">
+          <BaseButton href="/quiz">
             Evil-Score Test starten →
           </BaseButton>
-        </GlassCard>
+        </ContentCard>
       </div>
     </section>
 
@@ -38,7 +38,7 @@ const { jobs } = useJobs();
 
         <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           
-          <GlassCard 
+          <ContentCard 
             v-for="job in jobs" 
             :key="job.id" 
             class="flex flex-col hover:border-evil-light/40 transition-colors"
@@ -62,7 +62,7 @@ const { jobs } = useJobs();
             <BaseButton :href="`/karriere/${job.id}`" variant="secondary" class="w-full text-center">
               Stellenbeschreibung →
             </BaseButton>
-          </GlassCard>
+          </ContentCard>
 
         </div>
 

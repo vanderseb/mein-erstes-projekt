@@ -44,7 +44,7 @@ const submitApplication = () => {
       
       <template v-if="job">
         
-        <GlassCard padding="lg">
+        <ContentCard padding="lg">
           
           <!-- Header -->
           <div class="mb-6">
@@ -111,7 +111,7 @@ const submitApplication = () => {
             </BaseButton>
           </div>
 
-        </GlassCard>
+        </ContentCard>
 
       </template>
 

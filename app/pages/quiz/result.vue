@@ -26,18 +26,18 @@ const winner = computed(() => rankedJobs.value[0]);
       </div>
 
       <!-- Winner Card -->
-      <GlassCard padding="lg" class="text-center border-evil-red/50">
+      <ContentCard padding="lg" class="text-center border-evil-red/50">
         <p class="text-evil-mid text-sm uppercase tracking-wider mb-2">Dein perfekter Job</p>
         <h2 class="text-evil-red text-2xl mb-3">{{ winner.title }}</h2>
         <p class="text-evil-light/80 text-sm mb-6">{{ winner.description }}</p>
         
-        <BaseButton :href="`/jeopardy/form?job=${winner.id}`" class="w-full text-center">
+        <BaseButton :href="`/quiz/form?job=${winner.id}`" class="w-full text-center">
           Job annehmen
         </BaseButton>
-      </GlassCard>
+      </ContentCard>
 
       <!-- Alternatives -->
-      <GlassCard>
+      <ContentCard>
         <p class="text-evil-mid text-xs uppercase tracking-wider font-bold mb-4">
           Alternativen
         </p>
@@ -53,14 +53,14 @@ const winner = computed(() => rankedJobs.value[0]);
               <span class="text-evil-mid text-xs ml-2">({{ job.score }} Punkte)</span>
             </div>
             <NuxtLink 
-              :to="`/jeopardy/form?job=${job.id}`" 
+              :to="`/quiz/form?job=${job.id}`" 
               class="text-evil-red text-sm hover:text-white transition-colors"
             >
               Wählen
             </NuxtLink>
           </div>
         </div>
-      </GlassCard>
+      </ContentCard>
 
       <!-- Back Link -->
       <div class="text-center">

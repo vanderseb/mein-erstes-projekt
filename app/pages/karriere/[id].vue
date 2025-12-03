@@ -66,9 +66,16 @@ const heroImage = computed(() => `/design/assets/images/${jobId}.jpg`);
               <h3 class="text-white text-xl mb-4 flex items-center gap-3">
                 <span class="text-2xl">🧠</span> Das bringst du mit
               </h3>
-              <p class="text-evil-light/80">
-                {{ job.skills }}
-              </p>
+              <ul class="space-y-3">
+                <li 
+                  v-for="skills in job.skills" 
+                  :key="skills" 
+                  class="flex items-start text-evil-light/80"
+                >
+                  <span class="text-evil-red mr-3 mt-1">▸</span>
+                  {{ skills }}
+                </li>
+              </ul>
             </ContentCard>
 
           </div>

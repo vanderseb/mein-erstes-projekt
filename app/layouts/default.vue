@@ -20,7 +20,7 @@
             <img 
               src="/design/assets/logo/Logo_Icon_dunkler_Hintergrund.png" 
               alt="Dr. Evil & Söhne" 
-              class="h-8 w-auto opacity-60"
+              class="h-8 w-auto"
             />
             <p class="text-evil-mid text-sm">
               &copy; {{ new Date().getFullYear() }} Dr. Evil & Söhne GmbH

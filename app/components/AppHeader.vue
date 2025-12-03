@@ -12,7 +12,7 @@ const mobileMenuOpen = ref(false)
 </script>
 
 <template>
-  <header class="sticky top-0 z-50 bg-[#223E54] border-b border-evil-light/20">
+  <header class="sticky top-0 z-50 bg-evil-dark border-b border-evil-light/20">
     <nav class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
       
       <!-- Logo -->

@@ -3,10 +3,10 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
   modules: ['@nuxtjs/tailwindcss'],
-  
+
   // Globale CSS-Datei einbinden
   css: ['~/assets/css/main.css'],
-  
+
   // App-Konfiguration
   app: {
     head: {

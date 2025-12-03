@@ -11,19 +11,6 @@ export const useJobs = () => {
 
     const jobs: Job[] = [
         {
-            id: 'ceo',
-            title: 'Chief Executive Overlord (CEO)',
-            department: 'Executive Board & Inner Circle',
-            description: 'Nach dem unerwarteten Ausscheiden unseres letzten CEOs (Stichwort: Haifischbecken-Inzident), suchen wir eine visionäre Führungskraft.',
-            tasks: ['Strategische Planung: Definition der KPIs für Q3 (Kill-Per-Incident) und Ausbau der Marktanteile in der Schurken-Branche.',
-                'Monolog-Management: Professionelles Erklären des Masterplans vor gefesselten Geheimagenten (Mindestdauer: 5 Minuten), bevor Sie den Raum verlassen.',
-                'Krisenmanagement: Schnelle Evakuierung via Rettungskapsel, falls die Basis explodiert (Sie haben Vorrang vor dem Personal).',
-                'Entscheidungsgewalt: Alleinige Autorität über den „Großen Roten Knopf“.'],
-            skills: ['MBA (Master of Bad Administration) oder vergleichbare Diktatoren-Ausbildung.',
-                'Markantes Merkmal erwünscht (z. B. Narbe, Augenklappe, oder das Streicheln einer weißen Katze).',
-                'Hohe Toleranz für inkompetente Handlanger.']
-        },
-        {
             id: 'hr',
             title: 'Talent Acquisition Manager',
             department: 'Human Capital & Cannon Fodder',

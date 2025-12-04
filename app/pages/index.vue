@@ -1,15 +1,28 @@
 <script setup lang="ts">
 // Homepage - Dr. Evil & Söhne GmbH
+
+const heroImages = [
+  '/design/assets/images/01_Homepage_about_ous.jpg',
+  '/design/assets/images/02_contact.jpg',
+  '/design/assets/images/03_karriere.png',
+  '/design/assets/images/ceo.jpg',
+  '/design/assets/images/facility.jpg',
+  '/design/assets/images/finance.jpg',
+  '/design/assets/images/hr.jpg',
+  '/design/assets/images/it.jpg',
+  '/design/assets/images/rd.jpg',
+]
 </script>
 
 <template>
   <div>
     <!-- Hero Section -->
     <HeroSection 
-      image="/design/assets/images/01_Homepage_about_ous.jpg"
+      :images="heroImages"
       title="Dr. Evil & Söhne GmbH"
       subtitle="Tradition trifft Tyrannei seit 1965 – Ihr Partner für Premium-Weltherrschaft und nachhaltige Unterwerfung"
       :full-height="true"
+      :interval="5000"
     >
       <BaseButton href="/karriere">
         Karriere starten

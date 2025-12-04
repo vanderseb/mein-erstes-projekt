@@ -9,6 +9,7 @@
       image="/design/assets/images/02_contact.jpg"
       title="Kontakt"
       subtitle="Haben Sie Fragen? Möchten Sie die Welt unterwerfen? Schreiben Sie uns."
+      :full-height="true"
     />
 
     <!-- Kontakt-Informationen -->

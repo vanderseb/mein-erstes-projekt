@@ -10,6 +10,7 @@ const { jobs } = useJobs();
       image="/design/assets/images/03_karriere.png"
       title="Karriere bei Dr. Evil & Söhne"
       subtitle="Werden Sie Teil eines Teams, das die Welt verändert. Buchstäblich."
+      :full-height="true"
     />
 
     <!-- Evil Score CTA -->

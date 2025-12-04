@@ -20,6 +20,7 @@ const heroImage = computed(() => `/design/assets/images/${jobId}.jpg`);
         :image="heroImage"
         :title="job.title"
         :subtitle="job.department"
+        :full-height="true"
       />
 
       <!-- Job Details -->

@@ -17,12 +17,12 @@ const { jobs } = useJobs();
     <section class="py-12 px-4">
       <div class="max-w-4xl mx-auto">
         <ContentCard padding="lg" class="text-center">
-          <h2 class="text-white mb-4">Unsicher, wie böse du bist?</h2>
+          <h2 class="text-white mb-4">Hast du das Zeug zum Henchman?</h2>
           <p class="text-evil-light/80 mb-6">
             Finde deinen perfekten Job in unserem wissenschaftlich fragwürdigen Eignungstest.
           </p>
           <BaseButton href="/quiz">
-            Evil-Score Test starten →
+            Quiz starten →
           </BaseButton>
         </ContentCard>
       </div>

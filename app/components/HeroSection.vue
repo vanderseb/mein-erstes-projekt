@@ -17,15 +17,23 @@ const isSlider = computed(() => props.images && props.images.length > 1)
 const currentIndex = ref(0)
 let timer: ReturnType<typeof setInterval> | null = null
 
+// Timer stoppen und neu starten
+const resetTimer = () => {
+  if (timer) clearInterval(timer)
+  timer = setInterval(nextSlide, props.interval || 5000)
+}
+
 const nextSlide = () => {
   if (props.images) {
     currentIndex.value = (currentIndex.value + 1) % props.images.length
+    resetTimer()
   }
 }
 
 const prevSlide = () => {
   if (props.images) {
     currentIndex.value = (currentIndex.value - 1 + props.images.length) % props.images.length
+    resetTimer()
   }
 }
 
@@ -41,13 +49,13 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <section class="relative w-full">
+  <section class="w-full">
     
     <!-- SLIDER-MODUS -->
     <div 
       v-if="isSlider && images"
       class="relative w-full overflow-hidden"
-      :class="fullHeight ? 'h-[70vh]' : 'h-[40vh] md:h-[50vh]'"
+      :class="fullHeight ? 'h-[45vh] md:h-[70vh]' : 'h-[25vh] md:h-[50vh]'"
     >
       <!-- Slides -->
       <div
@@ -84,12 +92,12 @@ onUnmounted(() => {
     <div 
       v-else
       class="w-full bg-cover bg-center bg-no-repeat"
-      :class="fullHeight ? 'h-[70vh]' : 'h-[40vh] md:h-[50vh]'"
+      :class="fullHeight ? 'h-[45vh] md:h-[70vh]' : 'h-[25vh] md:h-[50vh]'"
       :style="{ backgroundImage: `url(${image})` }"
     />
     
-    <!-- Text-Container unterhalb des Bildes -->
-    <div class="relative z-10 px-4 pt-8">
+    <!-- Text-Container -->
+    <div class="px-4 pt-8">
       <div class="max-w-4xl mx-auto">
         
         <div class="bg-evil-dark border-l-4 border-evil-red p-6 md:p-8">

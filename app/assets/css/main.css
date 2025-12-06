@@ -1,11 +1,6 @@
-/* ==========================================================================
-   Dr. Evil & Söhne - Corporate Design Styles
-   ========================================================================== */
+/* Dr. Evil & Söhne - Corporate Design Styles */
 
-/* --------------------------------------------------------------------------
-   1. Font Face Declarations
-   -------------------------------------------------------------------------- */
-
+/* 1. Font Face Declarations */
 /* Dela Gothic One - Headlines */
 @font-face {
   font-family: 'Dela Gothic One';
@@ -32,9 +27,7 @@
   font-display: swap;
 }
 
-/* --------------------------------------------------------------------------
-   2. CSS Custom Properties (für einfache Referenzierung)
-   -------------------------------------------------------------------------- */
+/* 2. CSS Custom Properties (für einfache Referenzierung) */
 :root {
   --evil-dark: #223E54;
   --evil-mid: #5A7E8E;
@@ -42,9 +35,7 @@
   --evil-red: #DB162F;
 }
 
-/* --------------------------------------------------------------------------
-   3. Base Styles
-   -------------------------------------------------------------------------- */
+/* 3. Base Styles */
 html {
   scroll-behavior: smooth;
 }
@@ -58,9 +49,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* --------------------------------------------------------------------------
-   4. Typography Defaults
-   -------------------------------------------------------------------------- */
+/* 4. Typography Defaults */
 
 /* Headlines - Dela Gothic One */
 h1,
@@ -93,9 +82,7 @@ label {
   font-family: 'Roboto', sans-serif;
 }
 
-/* --------------------------------------------------------------------------
-   5. Link Styles
-   -------------------------------------------------------------------------- */
+/* 5. Link Styles */
 a {
   color: var(--evil-light);
   text-decoration: none;
@@ -106,17 +93,13 @@ a:hover {
   color: white;
 }
 
-/* --------------------------------------------------------------------------
-   6. Selection Styles
-   -------------------------------------------------------------------------- */
+/* 6. Selection Styles */
 ::selection {
   background-color: var(--evil-red);
   color: white;
 }
 
-/* --------------------------------------------------------------------------
-   7. Scrollbar Styling (optional, für WebKit-Browser)
-   -------------------------------------------------------------------------- */
+/* 7. Scrollbar Styling */
 ::-webkit-scrollbar {
   width: 8px;
 }

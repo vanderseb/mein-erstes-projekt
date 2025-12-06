@@ -29,10 +29,6 @@ const prevSlide = () => {
   }
 }
 
-const goToSlide = (index: number) => {
-  currentIndex.value = index
-}
-
 onMounted(() => {
   if (isSlider.value) {
     timer = setInterval(nextSlide, props.interval || 5000)
@@ -82,18 +78,6 @@ onUnmounted(() => {
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
         </svg>
       </button>
-
-      <!-- Dots Navigation -->
-      <div class="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex gap-2">
-        <button
-          v-for="(_, index) in images"
-          :key="index"
-          @click="goToSlide(index)"
-          class="w-3 h-3 rounded-full transition-colors"
-          :class="index === currentIndex ? 'bg-evil-red' : 'bg-white/50 hover:bg-white/80'"
-          :aria-label="`Zu Bild ${index + 1} wechseln`"
-        />
-      </div>
     </div>
 
     <!-- STATISCHER MODUS -->

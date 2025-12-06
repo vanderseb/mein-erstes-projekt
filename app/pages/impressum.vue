@@ -48,14 +48,6 @@
             <p>Umsatzsteuer-Identifikationsnummer gemäß §27 a Umsatzsteuergesetz:</p>
             <p>DE 666 666 666</p>
           </div>
-          
-          <div class="border-t border-evil-light/20 pt-6 mt-6">
-            <p class="text-evil-mid text-sm">
-              Hinweis: Diese Webseite ist ein fiktives Projekt zu Lernzwecken. 
-              Alle Angaben sind erfunden und dienen der Unterhaltung.
-            </p>
-          </div>
-          
         </div>
       </ContentCard>
       

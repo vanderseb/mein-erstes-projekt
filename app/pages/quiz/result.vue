@@ -1,16 +1,41 @@
 <script setup lang="ts">
-const { jobScores, evilScore } = useEvilState();
-const { jobs } = useJobs();
+const { jobs, getJobsByExpertise } = useJobs();
+const { 
+    evilScore, 
+    finalExpertise, 
+    findBestJob, 
+    calculateJobMatches 
+} = useEvilState();
 
-// Jobs nach Score sortieren
-const rankedJobs = computed(() => {
-  return jobs.map(job => ({
-    ...job,
-    score: jobScores.value[job.id] || 0
-  })).sort((a, b) => b.score - a.score);
+// Jobs die zur ermittelten Expertise passen
+const matchingJobs = computed(() => {
+    if (!finalExpertise.value) return jobs; // Fallback: alle Jobs
+    return getJobsByExpertise(finalExpertise.value);
 });
 
-const winner = computed(() => rankedJobs.value[0]);
+// Der beste Job basierend auf dem Matching-Algorithmus
+const winner = computed(() => {
+    if (matchingJobs.value.length === 0) return jobs[0]; // Fallback
+    return findBestJob(matchingJobs.value);
+});
+
+// Rangliste aller passenden Jobs mit Übereinstimmungen
+const rankedJobs = computed(() => {
+    return matchingJobs.value
+        .map(job => ({
+            ...job,
+            matches: calculateJobMatches(job)
+        }))
+        .sort((a, b) => b.matches - a.matches);
+});
+
+// Expertise Labels für die Anzeige
+const expertiseLabels: Record<string, string> = {
+    'Digital': 'IT & Hacking',
+    'Social_Engineering': 'Human Resources',
+    'Heavy_Machinery': 'Technik & Engineering',
+    'Economy': 'Finance & Operations'
+};
 </script>
 
 <template>
@@ -25,21 +50,41 @@ const winner = computed(() => rankedJobs.value[0]);
         </p>
       </div>
 
+      <!-- Expertise Badge -->
+      <div v-if="finalExpertise" class="text-center">
+        <span class="inline-block px-4 py-2 bg-evil-dark border border-evil-light/30 rounded-full text-evil-light text-sm">
+          Dein Fachgebiet: <strong class="text-white">{{ expertiseLabels[finalExpertise] || finalExpertise }}</strong>
+        </span>
+      </div>
+
       <!-- Winner Card -->
-      <ContentCard padding="lg" class="text-center border-evil-red/50">
+      <ContentCard v-if="winner" padding="lg" class="text-center border-evil-red/50">
         <p class="text-evil-mid text-sm uppercase tracking-wider mb-2">Dein perfekter Job</p>
-        <h2 class="text-evil-red text-2xl mb-3">{{ winner.title }}</h2>
+        <h2 class="text-evil-red text-2xl mb-4">{{ winner.title }}</h2>
         <p class="text-evil-light/80 text-sm mb-6">{{ winner.description }}</p>
         
-        <BaseButton :href="`/quiz/form?job=${winner.id}`" class="w-full text-center">
+        <!-- Job Tags -->
+        <div class="flex flex-wrap justify-center gap-2 mb-6">
+          <span class="px-2 py-1 bg-evil-dark/70 rounded text-xs text-evil-light">
+            {{ winner.hierarchy }}
+          </span>
+          <span class="px-2 py-1 bg-evil-dark/70 rounded text-xs text-evil-light">
+            {{ winner.approach }}
+          </span>
+          <span class="px-2 py-1 bg-evil-dark/70 rounded text-xs text-evil-light">
+            {{ winner.risk }}
+          </span>
+        </div>
+        
+        <BaseButton :href="`/bewerbung/${winner.id}?fromQuiz=true`" class="w-full text-center">
           Job annehmen
         </BaseButton>
       </ContentCard>
 
-      <!-- Alternatives -->
-      <ContentCard>
+      <!-- Alternatives (nur wenn mehr als 1 Job) -->
+      <ContentCard v-if="rankedJobs.length > 1">
         <p class="text-evil-mid text-xs uppercase tracking-wider font-bold mb-4">
-          Alternativen
+          Alternative Positionen
         </p>
         
         <div class="space-y-3">
@@ -50,10 +95,10 @@ const winner = computed(() => rankedJobs.value[0]);
           >
             <div>
               <span class="text-evil-light text-sm">{{ job.title }}</span>
-              <span class="text-evil-mid text-xs ml-2">({{ job.score }} Punkte)</span>
+              <span class="text-evil-mid text-xs ml-2">({{ job.matches }}/3 Treffer)</span>
             </div>
             <NuxtLink 
-              :to="`/quiz/form?job=${job.id}`" 
+              :to="`/bewerbung/${job.id}?fromQuiz=true`" 
               class="text-evil-red text-sm hover:text-white transition-colors"
             >
               Wählen
@@ -63,9 +108,12 @@ const winner = computed(() => rankedJobs.value[0]);
       </ContentCard>
 
       <!-- Back Link -->
-      <div class="text-center">
-        <NuxtLink to="/karriere" class="text-evil-mid text-sm hover:text-evil-light transition-colors">
-          ← Zurück zur Karriereübersicht
+      <div class="text-center space-y-2">
+        <NuxtLink to="/quiz" class="text-evil-red text-sm hover:text-white transition-colors block">
+          ← Quiz wiederholen
+        </NuxtLink>
+        <NuxtLink to="/karriere" class="text-evil-mid text-sm hover:text-evil-light transition-colors block">
+          Zur Karriereübersicht
         </NuxtLink>
       </div>
 

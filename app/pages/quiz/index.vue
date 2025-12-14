@@ -1,24 +1,9 @@
 <script setup lang="ts">
 const router = useRouter();
-const { allApplicationQuestions } = useQuestions();
-const { resetScores, processAnswer } = useEvilState();
 
-const step = ref(0);
-const currentQuestion = computed(() => allApplicationQuestions[step.value]);
-const progress = computed(() => ((step.value + 1) / allApplicationQuestions.length) * 100);
-
-// Reset beim Start
-onMounted(() => resetScores());
-
-const selectAnswer = (option: any) => {
-  processAnswer(option);
-  
-  if (step.value < allApplicationQuestions.length - 1) {
-    step.value++;
-  } else {
-    router.push('/quiz/result');
-  }
-};
+const { currentQuestion, progress, selectAnswer } = useQuizFlow({
+    onComplete: () => router.push('/quiz/result')
+});
 </script>
 
 <template>
@@ -30,18 +15,17 @@ const selectAnswer = (option: any) => {
         <!-- Header -->
         <div class="text-center mb-8">
           <h1 class="text-evil-red text-2xl mb-2">Evil Assessment Center</h1>
-          <p class="text-evil-mid text-sm">Finde heraus, wie böse du wirklich bist.</p>
+          <p class="text-evil-mid text-sm">Finde heraus, welcher Job zu dir passt.</p>
         </div>
 
         <!-- Progress Bar -->
         <div class="mb-8">
-          <div class="flex justify-between text-xs text-evil-mid mb-2">
-            <span>Frage {{ step + 1 }} von {{ allApplicationQuestions.length }}</span>
+          <div class="flex justify-end text-xs text-evil-mid mb-2">
             <span>{{ Math.round(progress) }}%</span>
           </div>
           <div class="h-1 bg-evil-dark rounded-full overflow-hidden">
             <div 
-              class="h-full bg-evil-red transition-all duration-300"
+              class="h-full bg-evil-red transition-all duration-500"
               :style="{ width: `${progress}%` }"
             ></div>
           </div>
@@ -63,6 +47,11 @@ const selectAnswer = (option: any) => {
               {{ opt.label }}
             </button>
           </div>
+        </div>
+
+        <!-- Loading State -->
+        <div v-else class="text-center py-8">
+          <p class="text-evil-mid">Berechne dein Ergebnis...</p>
         </div>
         
       </ContentCard>

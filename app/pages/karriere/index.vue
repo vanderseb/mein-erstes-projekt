@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // Karriere-Übersicht
-const { jobs } = useJobs();
+const { jobs, DEPARTMENT_LABELS } = useJobs();
 </script>
 
 <template>
@@ -46,7 +46,7 @@ const { jobs } = useJobs();
           >
             <!-- Department Badge -->
             <span class="inline-block text-xs font-bold uppercase tracking-wider text-evil-red bg-evil-red/10 px-3 py-1 rounded-evil mb-4 self-start">
-              {{ job.department }}
+              {{ DEPARTMENT_LABELS[job.department] }}
             </span>
             
             <!-- Title -->

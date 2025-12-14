@@ -1,26 +1,68 @@
 // composables/useQuestions.ts
+import type { Expertise, Hierarchy, Approach, Risk } from './useJobs';
+
+// --- Typ-Definitionen ---
+
+// Phase 1: Persönlichkeitsfragen (Evil Score)
+export interface PersonalityAnswer {
+    label: string;
+    evilPoints: number;
+}
+
+export interface PersonalityQuestion {
+    id: string;
+    text: string;
+    type: 'personality';
+    options: PersonalityAnswer[];
+}
+
+// Phase 2: Expertise-Filter Fragen (Binäre Suche)
+export interface ExpertiseAnswer {
+    label: string;
+    keep: Expertise[];
+    discard: Expertise[];
+    next?: string; // ID der nächsten Frage
+}
+
+export interface ExpertiseQuestion {
+    id: string;
+    text: string;
+    type: 'expertise';
+    options: ExpertiseAnswer[];
+}
+
+// Phase 3: Discriminator Fragen (Tie-Breaker)
+export interface DiscriminatorAnswer {
+    label: string;
+    hierarchy?: Hierarchy;
+    approach?: Approach;
+    risk?: Risk;
+}
+
+export interface DiscriminatorQuestion {
+    id: string;
+    text: string;
+    type: 'discriminator';
+    trigger: 'hierarchy' | 'approach' | 'risk'; // Welches Attribut diese Frage unterscheidet
+    options: DiscriminatorAnswer[];
+}
+
+// Admin-Felder für Bewerbungsformular
+export interface AdminField {
+    id: string;
+    label: string;
+    placeholder: string;
+    type: 'text' | 'email';
+}
+
 export const useQuestions = () => {
 
-    // Typ-Definitionen
-    interface AnswerOption {
-        label: string;
-        evilPoints?: number;   // Für Persönlichkeitsfragen (-1, +1, +2)
-        jobScore?: string;     // Für Wissensfragen (z.B. 'hr', 'it')
-    }
-
-    interface Question {
-        id: string | number;
-        text: string;
-        type: 'radio' | 'select' | 'text' | 'file'; // file wird hier simuliert
-        options?: AnswerOption[];
-    }
-
-    // --- TEIL 1: Persönlichkeitsfragen (Evil Score) ---
-    const personalityQuestions: Question[] = [
+    // --- PHASE 1: Persönlichkeitsfragen (Evil Score) ---
+    const personalityQuestions: PersonalityQuestion[] = [
         {
             id: 'p1',
             text: "Das Fahrstuhl-Dilemma: Sie stehen allein im Fahrstuhl. Die Türen schließen sich gerade. In der Ferne sehen Sie einen Kollegen rennen, der den Fahrstuhl noch erreichen möchte. Er ruft 'Warten!'. Was tun Sie?",
-            type: 'radio',
+            type: 'personality',
             options: [
                 { label: "Ich drücke sofort 'Tür öffnen'.", evilPoints: -1 },
                 { label: "Ich tue so, als würde ich suchen.", evilPoints: 1 },
@@ -30,7 +72,7 @@ export const useQuestions = () => {
         {
             id: 'p2',
             text: "Der Pausenraum-Zwischenfall: Im gemeinschaftlichen Kühlschrank steht ein Joghurt. Auf dem Deckel steht groß und deutlich 'LISA'. Sie haben Hunger und keinen eigenen Joghurt dabei.",
-            type: 'radio',
+            type: 'personality',
             options: [
                 { label: "Stehen lassen.", evilPoints: -1 },
                 { label: "Essen und Müll verstecken.", evilPoints: 1 },
@@ -40,7 +82,7 @@ export const useQuestions = () => {
         {
             id: 'p3',
             text: "Supermarkt-Strategie: Sie stehen an der Kasse im Supermarkt. Eine alte Dame hinter Ihnen hat nur zwei Artikel in der Hand. Sie haben einen vollen Einkaufswagen.",
-            type: 'radio',
+            type: 'personality',
             options: [
                 { label: "Vorlassen.", evilPoints: -1 },
                 { label: "Ignorieren.", evilPoints: 1 },
@@ -49,75 +91,133 @@ export const useQuestions = () => {
         }
     ];
 
-    // --- TEIL 2: Wissensfragen (Job Scores)
-    const knowledgeQuestions: Question[] = [
+    // --- PHASE 2: Expertise-Filter Fragen (Adaptive Funnel) ---
+    const expertiseQuestions: ExpertiseQuestion[] = [
         {
-            id: 'k1',
-            text: "Wie viele Liter organische Flüssigkeit nach Falltür-Malheur?",
-            type: 'radio',
+            id: 'e1',
+            text: "Wie möchtest du zur Weltherrschaft beitragen?",
+            type: 'expertise',
             options: [
-                { label: "5 bis 7 Liter", jobScore: 'facility' },
-                { label: "18 - 20 Liter" },
-                { label: "3 - 4 Liter" }
+                {
+                    label: "Durch technologische Überlegenheit und Maschinen.",
+                    keep: ['Digital', 'Heavy_Machinery'],
+                    discard: ['Social_Engineering', 'Economy'],
+                    next: 'e2_tech'
+                },
+                {
+                    label: "Durch Manipulation der Menschen und Märkte.",
+                    keep: ['Social_Engineering', 'Economy'],
+                    discard: ['Digital', 'Heavy_Machinery'],
+                    next: 'e2_people'
+                }
             ]
         },
         {
-            id: 'k2',
-            text: "Laser-Laufzeit Mond bis Weißes Haus?",
-            type: 'radio',
+            id: 'e2_tech',
+            text: "Wo arbeitest du am liebsten?",
+            type: 'expertise',
             options: [
-                { label: "1,1 Minute" },
-                { label: "1,3 Sekunden", jobScore: 'rd' },
-                { label: "0,0056 Millisekunden" }
+                {
+                    label: "Im dunklen Serverraum, beleuchtet nur von LEDs.",
+                    keep: ['Digital'],
+                    discard: ['Heavy_Machinery']
+                },
+                {
+                    label: "In der Werkstatt, wo Funken fliegen und Dinge explodieren.",
+                    keep: ['Heavy_Machinery'],
+                    discard: ['Digital']
+                }
             ]
         },
         {
-            id: 'k3',
-            text: "Wie schnell wird Passwort '12345' geknackt?",
-            type: 'radio',
+            id: 'e2_people',
+            text: "Was ist dein bevorzugtes Druckmittel?",
+            type: 'expertise',
             options: [
-                { label: "Sofort", jobScore: 'it' },
-                { label: "1 Tag" },
-                { label: "1 Stunde" }
-            ]
-        },
-        {
-            id: 'k4',
-            text: "Wie viel Gold lagert in Fort Knox?",
-            type: 'radio',
-            options: [
-                { label: "934,7 Mrd. Unzen" },
-                { label: "100 Tausend Unzen" },
-                { label: "147,3 Mio. Unzen", jobScore: 'finance' }
-            ]
-        },
-        {
-            id: 'k5',
-            text: "Dunbar-Zahl (stabile soziale Beziehungen)?",
-            type: 'radio',
-            options: [
-                { label: "ca. 50 Personen" },
-                { label: "ca. 150 Personen", jobScore: 'hr' },
-                { label: "ca. 500 Personen" }
-            ]
-        },
-        {
-            id: 'k6', // Die große Szenario Frage
-            text: "Es Brennt.Was retten Sie aus dem Gebäude?",
-            type: 'radio',
-            options: [
-                { label: "Den Koffer mit den nicht-nummerierten Inhaberaktien und dem Schwarzgeld.", jobScore: 'finance' },
-                { label: "Die Backup-Festplatten mit den Erpressungsdaten (und der Browser-History des Chefs).", jobScore: 'it' },
-                { label: "Den einzigen funktionierenden Prototypen des 'Schrumpf-o-mat 3000'.", jobScore: 'rd' },
-                { label: "Die Kontaktliste der Reserve-Söldner (gutes Personal ist schwer zu finden).", jobScore: 'hr' },
-                { label: "Den antiken Perser-Teppich aus dem Chefbüro (Blutflecken gehen da so schwer raus).", jobScore: 'facility' }
+                {
+                    label: "Erpresserische Geheimnisse und psychologischer Druck.",
+                    keep: ['Social_Engineering'],
+                    discard: ['Economy']
+                },
+                {
+                    label: "Geldströme, Bestechung und Offshore-Konten.",
+                    keep: ['Economy'],
+                    discard: ['Social_Engineering']
+                }
             ]
         }
     ];
 
-    // --- TEIL 3: Die Admin-Felder (Schlusseingabe) ---
-    // Diese rendern wir etwas anders, daher definieren wir sie separat
-    const adminFields = [
+    // --- PHASE 3: Discriminator Fragen (Tie-Breaker) ---
+    const discriminatorQuestions: DiscriminatorQuestion[] = [
+        {
+            id: 'd_hierarchy',
+            text: "Ein Experiment läuft schief und giftiger Schleim tritt aus. Deine Reaktion?",
+            type: 'discriminator',
+            trigger: 'hierarchy',
+            options: [
+                {
+                    label: "Ich analysiere die chemische Zusammensetzung, um es als Waffe zu nutzen.",
+                    hierarchy: 'Mastermind'
+                },
+                {
+                    label: "Ich hole den Spezial-Mopp und mache sauber, bevor der Boss es sieht.",
+                    hierarchy: 'Minion'
+                },
+                {
+                    label: "Ich dokumentiere den Vorfall und melde es meinem Vorgesetzten.",
+                    hierarchy: 'Henchman'
+                }
+            ]
+        },
+        {
+            id: 'd_approach',
+            text: "Du entdeckst eine Sicherheitslücke im System der Konkurrenz.",
+            type: 'discriminator',
+            trigger: 'approach',
+            options: [
+                {
+                    label: "Ich zerstöre ihre Datenbanken vollständig.",
+                    approach: 'Destructive'
+                },
+                {
+                    label: "Ich installiere eine Hintertür und höre heimlich mit.",
+                    approach: 'Manipulative'
+                },
+                {
+                    label: "Ich verkaufe die Information an den Meistbietenden.",
+                    approach: 'Greedy'
+                },
+                {
+                    label: "Ich melde es dem Chef und warte auf Anweisungen.",
+                    approach: 'Obedient'
+                }
+            ]
+        },
+        {
+            id: 'd_risk',
+            text: "Der Chef bietet dir einen Bonus an, aber der Job ist gefährlich. Deine Reaktion?",
+            type: 'discriminator',
+            trigger: 'risk',
+            options: [
+                {
+                    label: "Gefahr? Das ist mein zweiter Vorname. Ich bin dabei!",
+                    risk: 'Lethal'
+                },
+                {
+                    label: "Mit der richtigen Schutzausrüstung mache ich alles.",
+                    risk: 'Toxic'
+                },
+                {
+                    label: "Ich bevorzuge Risiken, die nur meine Karriere betreffen.",
+                    risk: 'Safe_Desk'
+                }
+            ]
+        }
+    ];
+
+    // --- ADMIN-FELDER für Bewerbungsformular ---
+    const adminFields: AdminField[] = [
         { id: 'salary', label: 'Gehaltsvorstellung (BTC)', placeholder: 'Jahresbrutto in Bitcoin', type: 'text' },
         { id: 'availability', label: 'Verfügbarkeit', placeholder: 'TT.MM.JJJJ oder "Sofort nach Haft..."', type: 'text' },
         { id: 'motivation', label: 'Aktueller Arbeitgeber & Wechselgrund', placeholder: "z.B. 'MI6 - Zu viel Bürokratie'", type: 'text' },
@@ -125,13 +225,22 @@ export const useQuestions = () => {
         { id: 'email', label: 'E-Mail Adresse', placeholder: 'max@evil-corp.com', type: 'email' }
     ];
 
-    // Helper: Gib mir ALLE Fragen für den Bewerbungsprozess
-    const allApplicationQuestions = [...personalityQuestions, ...knowledgeQuestions];
+    // --- HELPER FUNKTIONEN ---
+
+    // Expertise-Frage nach ID finden
+    const getExpertiseQuestionById = (id: string) =>
+        expertiseQuestions.find(q => q.id === id);
+
+    // Discriminator-Frage nach Trigger finden
+    const getDiscriminatorByTrigger = (trigger: 'hierarchy' | 'approach' | 'risk') =>
+        discriminatorQuestions.find(q => q.trigger === trigger);
 
     return {
         personalityQuestions,
-        knowledgeQuestions,
-        allApplicationQuestions,
-        adminFields
+        expertiseQuestions,
+        discriminatorQuestions,
+        adminFields,
+        getExpertiseQuestionById,
+        getDiscriminatorByTrigger
     };
 };

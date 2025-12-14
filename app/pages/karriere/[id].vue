@@ -1,13 +1,20 @@
 <script setup lang="ts">
 const route = useRoute();
-const { getJobById } = useJobs();
+const { getJobById, getDepartmentLabel } = useJobs();
 
 // Job-ID aus der URL
 const jobId = route.params.id as string;
 const job = getJobById(jobId);
 
-// Bild-Pfad basierend auf Job-ID
-const heroImage = computed(() => `/design/assets/images/${jobId}.jpg`);
+// Bild-Pfad basierend auf Department (hr, rd, it, finance, facility)
+const heroImage = computed(() => 
+    job ? `/design/assets/images/${job.department}.jpg` : ''
+);
+
+// Department-Label für die Anzeige
+const departmentLabel = computed(() => 
+    job ? getDepartmentLabel(job.department) : ''
+);
 </script>
 
 <template>
@@ -15,11 +22,11 @@ const heroImage = computed(() => `/design/assets/images/${jobId}.jpg`);
     <!-- Job gefunden -->
     <template v-if="job">
       
-      <!-- Hero mit Job-spezifischem Bild -->
+      <!-- Hero mit Department-spezifischem Bild -->
       <HeroSection 
         :image="heroImage"
         :title="job.title"
-        :subtitle="job.department"
+        :subtitle="departmentLabel"
         :full-height="true"
       />
 

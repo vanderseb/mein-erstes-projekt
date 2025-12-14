@@ -1,0 +1,134 @@
+Projektspezifikation: Dr. Evil Job Funnel (v1.0)
+
+Einleitung
+Der Prozess zur Bewerbung und zum Quiz wird umgebaut.
+Ziel: ein Tag-basiertes Entscheidungssystem, das noch zielgerichteter dem Bewerber einen passenden Job vorschlägt.
+
+Das Datenmodell (Interfaces)
+Jeder Job wird durch eine Kombination dieser 4 Attribute definiert:
+1. expertise (Der Fachbereich - Hard Filter)
+    1. Values: 'Digital' (IT), 'Social_Engineering' (HR), 'Heavy_Machinery' (R&D/Facility), 'Economy' (Finance).
+2. hierarchy (Der Rang - Soft Filter)
+    1. Values: 'Mastermind' (Lead/Senior), 'Henchman' (Mid-Level), 'Minion' (Junior/Assistenz).
+3. approach (Die Arbeitsweise - Soft Filter)
+    1. Values: 'Destructive' (Zerstörerisch), 'Manipulative' (Einflussnehmend), 'Greedy' (Gierig), 'Obedient' (Gehorsam).
+4. risk (Arbeitsumgebung - Soft Filter)
+    1. Values: 'Lethal' (Tödlich), 'Toxic' (Gesundheitsschädlich), 'Safe_Desk' (Büro).
+
+Füge diese Attribute den Jobs wie folgt zu und erweitere interface Job:
+id: 'hr',
+title: 'Talent Acquisition Manager',
+department: 'Human Capital & Cannon Fodder',
+expertise: 'Social_Engineering',
+hierarchy: 'Mastermind',
+approach: 'Manipulative',
+risk: 'Safe_Desk',
+description: ...
+
+id: 'rd',
+title: 'Senior Engineer für Laser & Falltüren',
+department: 'R&D (Research & Destruction),
+expertise: 'Heavy_Machinery',
+hierarchy: 'Mastermind',
+approach: 'Destructive',
+risk: 'Lethal',
+description: ...
+
+id: 'it',
+title: 'Full-Stack Hacker',
+department: 'IT & Global Hacking',
+expertise: 'Digital',
+hierarchy: 'Henchman',
+approach: 'Obedient',
+risk: 'Safe_Desk',
+description: ...
+
+id: 'finance',
+title: 'Head of Money Laundering',
+department: 'Finance & Black Budget',
+expertise: 'Economy',
+hierarchy: 'Mastermind',
+approach: 'Greedy',
+risk: 'Safe_Desk',
+description: ...
+
+id: 'facility',
+title: 'Specialist for Surface Cleaning',
+department: 'Facility & Tatort-Management',
+expertise: 'Heavy_Machinery',
+hierarchy: 'Minion',
+approach: 'Obedient',
+risk: 'Toxic',
+description: ...
+
+Die Algorithmus-Logik (Der Flow)
+Der Funnel durchläuft 3 Phasen.
+
+Phase 1: Ermittlung des Evil-Score
+Der Evil-Score wird auf die selbe Art und Weise ermittelt wie bisher.
+
+Phase 2: Der "Adaptive Expertise Funnel" (Binäre Suche)
+Ziel: Ermittlung der Expertise des Bewerbers (Digital, Social_Engineering, Heavy_Machinery, Economy).
+Methode: Wir schließen Kategorien aus, statt Punkte zu zählen.
+Dynamik: Fragen werden nur gestellt, wenn die entsprechenden Jobs der ausgewählten expertise entsprechen.
+
+Logik:
+1. Start: Alle Expertisen sind möglich.
+2. Frage 1 (Root): Teilt das Feld in zwei Gruppen (z.B. "Technik" vs. "Menschen").
+3. Frage 2 (Branch): Teilt die Gewinner-Gruppe erneut auf (z.B. "Software" vs. "Hardware").
+4. Ergebnis: Eine eindeutige expertise steht fest. Alle Jobs mit anderer Expertise werden verworfen.
+
+Phase 3: Das "Discriminator Scoring" (Detail-Matching)
+Ziel: Zwischen verbleibenden Jobs der gleichen Expertise unterscheiden (z.B. Senior vs. Junior).
+Methode: Das System prüft, worin sich die verbleibenden Jobs unterscheiden (z.B. hierarchy), und stellt genau dazu Fragen.
+Berechnung: Höchster Score gewinnt.
+
+4. Der Fragenkatalog (Content Script)
+Hier sind die Fragen für useQuestions.ts, die die Logik abbilden.
+
+Phase 2: Expertise-Filter (Root Level)
+Frage 2.0 (Der Grobe Split)
+Frage: "Wie möchtest du zur Weltherrschaft beitragen?"
+* Antwort A: "Durch technologische Überlegenheit und Maschinen."
+    * Logic: Keep ['Digital', 'Heavy_Machinery']. Discard ['Social_Engineering', 'Economy'].
+    * Next: Go to Question 2.1
+* Antwort B: "Durch Manipulation der Menschen und Märkte."
+    * Logic: Keep ['Social_Engineering', 'Economy']. Discard ['Digital', 'Heavy_Machinery'].
+    * Next: Go to Question 2.2
+
+Phase 2.1: Der Tech-Split (Wenn Frage 2.0 = A)
+Frage 2.1
+Frage: "Wo arbeitest du am liebsten?"
+* Antwort A: "Im dunklen Serverraum, beleuchtet nur von LEDs."
+    * Logic: Keep ['Digital']. (Winner: IT/Hacker)
+* Antwort B: "In der Werkstatt, wo Funken fliegen und Dinge explodieren."
+    * Logic: Keep ['Heavy_Machinery']. (Winner: R&D/Facility)
+
+Phase 2.2: Der People/Money-Split (Wenn Frage 2.0 = B)
+Frage 2.2
+Frage: "Was ist dein bevorzugtes Druckmittel?"
+* Antwort A: "Erpresserische Geheimnisse und psychologischer Druck."
+    * Logic: Keep ['Social_Engineering']. (Winner: HR)
+* Antwort B: "Geldströme, Bestechung und Offshore-Konten."
+    * Logic: Keep ['Economy']. (Winner: Finance)
+
+Phase 3: Job Matching (Beispiele für Tie-Breaker)
+Diese Fragen werden nur geladen, wenn nach Phase 2 noch mehrere Jobs übrig sind (z.B. "Senior Engineer" UND "Cleaner" sind beide Heavy_Machinery).
+Frage 3.0 (Unterscheidung: Hierarchy / Risk)
+Trigger: Wenn Jobs mit unterschiedlichem hierarchy Level im Rennen sind.
+Frage: "Ein Experiment läuft schief und giftiger Schleim tritt aus. Deine Reaktion?"
+* Antwort A: "Ich analysiere die chemische Zusammensetzung, um es als Waffe zu nutzen."
+    * Score: attribute: 'hierarchy', value: 'Mastermind', weight: 5
+    * Score: attribute: 'risk', value: 'Lethal', weight: 3
+    * Richtung: Senior Engineer.
+* Antwort B: "Ich hole den Spezial-Mopp und mache sauber, bevor der Boss es sieht."
+    * Score: attribute: 'hierarchy', value: 'Minion', weight: 5
+    * Score: attribute: 'approach', value: 'Obedient', weight: 3
+    * Richtung: Facility Cleaner.
+Frage 3.1 (Unterscheidung: approach)
+Trigger: Wenn Jobs mit unterschiedlichem modus im Rennen sind (z.B. Hacker vs. Support).
+Frage: "Du entdeckst eine Sicherheitslücke im System der Konkurrenz."
+* Antwort A: "Ich zerstöre ihre Datenbanken vollständig."
+    * Score: attribute: 'approach', value: 'Destructive', weight: 5
+* Antwort B: "Ich installiere eine Hintertür und höre heimlich mit."
+    * Score: attribute: 'approach', value: 'Manipulative', weight: 5

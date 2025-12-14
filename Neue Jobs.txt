@@ -1,143 +1,7 @@
-// composables/useJobs.ts
-
-// Type-Definitionen für das Tag-basierte Job-System
-export type Expertise = 'Digital' | 'Social_Engineering' | 'Heavy_Machinery' | 'Economy';
-export type Hierarchy = 'Mastermind' | 'Henchman' | 'Minion';
-export type Approach = 'Destructive' | 'Manipulative' | 'Greedy' | 'Obedient';
-export type Risk = 'Lethal' | 'Toxic' | 'Safe_Desk';
-
-// Department-Typen (interner Schlüssel für Bilder)
-export type Department = 'hr' | 'rd' | 'it' | 'finance' | 'facility';
-
-// Mapping: Department-Schlüssel → Anzeige-Label
-export const DEPARTMENT_LABELS: Record<Department, string> = {
-    hr: 'Human Capital & Cannon Fodder',
-    rd: 'R&D (Research & Destruction)',
-    it: 'IT & Global Hacking',
-    finance: 'Finance & Black Budget',
-    facility: 'Facility & Tatort-Management'
-};
-
-export interface Job {
-    id: string;
-    title: string;
-    department: Department;  // Interner Schlüssel (hr, rd, it, etc.)
-    // Tag-Attribute für das Matching-System
-    expertise: Expertise;
-    hierarchy: Hierarchy;
-    approach: Approach;
-    risk: Risk;
-    // Bestehende Felder
-    description: string;
-    tasks: string[];
-    skills: string[];
-}
-
-export const useJobs = () => {
-    const jobs: Job[] = [
-        {
-            id: '001',
-            title: 'Talent Acquisition Manager',
-            department: 'hr',
-            expertise: 'Social_Engineering',
-            hierarchy: 'Mastermind',
-            approach: 'Manipulative',
-            risk: 'Safe_Desk',
-            description: 'Unsere Fluktuationsrate ist branchenüblich hoch (ca. 40% pro Agenten-Infiltration). Wir suchen einen Recruiter, der schnell für Nachschub an loyalem, uniformiertem Personal sorgt, das keine Fragen stellt.',
-            tasks: [
-                'Massen-Recruiting von Wachpersonal (Anforderungsprofil: Sportlich, schlechtes Zielvermögen, namenlos)',
-                'Onboarding neuer Handlanger (Ausgabe der Uniformen, Unterzeichnung der Verschwiegenheitserklärung mit Blut)',
-                'Verwaltung der „Vermissten"-Akten'
-            ],
-            skills: [
-                'Empathielosigkeit',
-                'Erfahrung mit befristeten Arbeitsverhältnissen (sehr befristet)',
-                'Hohe Resilienz gegenüber spontanen Vorgesetzten-Wechseln'
-            ]
-        },
-        {
-            id: '002',
-            title: 'Senior Engineer für Laser & Falltüren',
-            department: 'rd',
-            expertise: 'Heavy_Machinery',
-            hierarchy: 'Mastermind',
-            approach: 'Destructive',
-            risk: 'Lethal',
-            description: 'Dr. Evil & Söhne steht für Qualität. Wenn wir auf den roten Knopf drücken, muss es funktionieren. Wir suchen einen Ingenieur, der Perfektion liebt.',
-            tasks: [
-                'Wartung und Ölung der hydraulischen Falltüren im Chefbüro',
-                'Integration von Laserwaffen auf exotische Trägersysteme (Drohnen, Haie, Monde)',
-                'Selbstzerstörungs-Countdown Wartung'
-            ],
-            skills: [
-                'Master in Maschinenbau und Moralunterdrückung',
-                'Leidenschaft für dramatisch große rote Knöpfe',
-                'Kompromisslose Liebe zum Detail: Ein Countdown darf niemals stoppen!'
-            ]
-        },
-        {
-            id: '003',
-            title: 'Full-Stack Hacker (m/w/d)',
-            department: 'it',
-            expertise: 'Digital',
-            hierarchy: 'Henchman',
-            approach: 'Obedient',
-            risk: 'Safe_Desk',
-            description: 'Wir suchen einen Coder, der keine ethischen Grenzen kennt, sondern nur technische Herausforderungen.',
-            tasks: [
-                'Entwicklung von bedrolichen E-Mail-Verteilern (Dark Mode only)',
-                'Firewall-Penetration bei Zentralbanken',
-                'Entlaufende Python des Chefs aufspühren'
-            ],
-            skills: [
-                'Flexiblen moralischen Kompass („Datenschutz" = „Datenschatz")',
-                'C++, LavaScript, DarkWeb-APIs',
-                'Eintrag im Interpol-Register ist ein Plus'
-            ]
-        },
-        {
-            id: '004',
-            title: 'Head of Money Laundering',
-            department: 'finance',
-            expertise: 'Economy',
-            hierarchy: 'Mastermind',
-            approach: 'Greedy',
-            risk: 'Safe_Desk',
-            description: 'Weltherrschaft kostet Geld. Vulkane mieten sich nicht von allein. Wir suchen ein Finanzgenie, das Bilanzen so kreativ frisiert wie unser CEO seine Katze.',
-            tasks: [
-                'Verschleierung von Geldströmen (Cayman Islands)',
-                'Umwandlung von Lösegeld in Goldbarren',
-                'Kostenstellenrechnung „Projekt Apokalypse"'
-            ],
-            skills: [
-                'Kreative Buchführung',
-                'Nennung aller Steuerparadiese',
-                'Steuervermeidung als Kunstform'
-            ]
-        },
-        {
-            id: '005',
-            title: 'Specialist for Surface Cleaning',
-            department: 'facility',
-            expertise: 'Heavy_Machinery',
-            hierarchy: 'Minion',
-            approach: 'Obedient',
-            risk: 'Toxic',
-            description: 'Wo gehobelt wird, fallen Späne – und wo die Weltherrschaft geplant wird, fallen manchmal Mitarbeiter. Wir suchen eine diskrete Fachkraft, die unsere vulkanbasierte Zentrale sauber hält.',
-            tasks: [
-                'Reinigung nach „enttäuschenden" Performance-Reviews',
-                'Polieren der Doomsday-Devices',
-                'Reinigung des Haifischbeckens (von innen)'
-            ],
-            skills: [
-                'Diskretion',
-                'eigener Schutzanzug'
-            ]
-        },
-        {
+{
             id: '006',
             title: 'VP of Global Gaslighting',
-            department: 'hr',
+            department: 'hr', // Human Capital & Cannon Fodder
             expertise: 'Social_Engineering',
             hierarchy: 'Mastermind',
             approach: 'Manipulative',
@@ -157,7 +21,7 @@ export const useJobs = () => {
         {
             id: '007',
             title: 'Junior Henchman (Patrol Duty)',
-            department: 'facility',
+            department: 'facility', // Facility & Tatort-Management
             expertise: 'Heavy_Machinery',
             hierarchy: 'Minion',
             approach: 'Obedient',
@@ -177,7 +41,7 @@ export const useJobs = () => {
         {
             id: '008',
             title: 'UX-Designer für Giant Screens',
-            department: 'it',
+            department: 'it', // IT & Global Hacking
             expertise: 'Digital',
             hierarchy: 'Henchman',
             approach: 'Manipulative',
@@ -197,7 +61,7 @@ export const useJobs = () => {
         {
             id: '009',
             title: 'Acquisition Manager: Secret Lairs',
-            department: 'finance',
+            department: 'finance', // Finance & Black Budget
             expertise: 'Economy',
             hierarchy: 'Henchman',
             approach: 'Greedy',
@@ -217,7 +81,7 @@ export const useJobs = () => {
         {
             id: '010',
             title: 'Lead Scientist: Weather Manipulation',
-            department: 'rd',
+            department: 'rd', // R&D (Research & Destruction)
             expertise: 'Heavy_Machinery',
             hierarchy: 'Mastermind',
             approach: 'Destructive',
@@ -237,7 +101,7 @@ export const useJobs = () => {
         {
             id: '011',
             title: 'Botnet Operator (Social Media)',
-            department: 'it',
+            department: 'it', // IT & Global Hacking
             expertise: 'Digital',
             hierarchy: 'Minion',
             approach: 'Destructive',
@@ -257,7 +121,7 @@ export const useJobs = () => {
         {
             id: '012',
             title: 'Budget Controller: Uranium & Snacks',
-            department: 'finance',
+            department: 'finance', // Finance & Black Budget
             expertise: 'Economy',
             hierarchy: 'Minion',
             approach: 'Greedy',
@@ -277,7 +141,7 @@ export const useJobs = () => {
         {
             id: '013',
             title: 'Senior Interrogator',
-            department: 'hr',
+            department: 'hr', // Human Capital & Cannon Fodder
             expertise: 'Social_Engineering',
             hierarchy: 'Henchman',
             approach: 'Destructive',
@@ -297,7 +161,7 @@ export const useJobs = () => {
         {
             id: '014',
             title: 'Monorail Driver (Secret Base)',
-            department: 'facility',
+            department: 'facility', // Facility & Tatort-Management
             expertise: 'Heavy_Machinery',
             hierarchy: 'Minion',
             approach: 'Obedient',
@@ -317,14 +181,14 @@ export const useJobs = () => {
         {
             id: '015',
             title: 'Toxic Waste Disposal Intern',
-            department: 'rd',
+            department: 'rd', // R&D (Research & Destruction)
             expertise: 'Heavy_Machinery',
             hierarchy: 'Minion',
             approach: 'Obedient',
             risk: 'Toxic',
             description: 'Der perfekte Einstieg in die Welt des Verbrechens! Entsorgen Sie die fehlgeschlagenen Experimente von Abteilung 4.',
             tasks: [
-                'Transport von Fässern mit grün leuchtendem Schleim',
+                'Transport von fässern mit grün leuchtendem Schleim',
                 'Fütterung der mutierten Riesenpflanze "Gertrud"',
                 'Wischen, wenn ein Behälter leckt'
             ],
@@ -333,18 +197,8 @@ export const useJobs = () => {
                 'Hohe Schmerztoleranz',
                 'Eigener Geigerzähler ist von Vorteil'
             ]
-        },
+        }
     ];
 
-    const getJobById = (id: string) => jobs.find(job => job.id === id);
-
-    // Hilfsfunktion: Jobs nach Expertise filtern
-    const getJobsByExpertise = (expertise: Expertise) =>
-        jobs.filter(job => job.expertise === expertise);
-
-    // Hilfsfunktion: Department-Label holen
-    const getDepartmentLabel = (department: Department): string =>
-        DEPARTMENT_LABELS[department];
-
-    return { jobs, getJobById, getJobsByExpertise, getDepartmentLabel, DEPARTMENT_LABELS };
+    return jobs;
 };

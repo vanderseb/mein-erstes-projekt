@@ -98,21 +98,3 @@ a:hover {
   background-color: var(--evil-red);
   color: white;
 }
-
-/* 7. Scrollbar Styling */
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: var(--evil-dark);
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--evil-mid);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--evil-light);
-}

@@ -1,6 +1,8 @@
 <script setup lang="ts">
 // Homepage - Dr. Evil & Söhne GmbH
 
+// 1. Import ganz oben
+
 const heroImages = [
   '/design/assets/images/01_Homepage_about_ous.jpg',
   '/design/assets/images/02_contact.jpg',
@@ -12,7 +14,10 @@ const heroImages = [
   '/design/assets/images/it.jpg',
   '/design/assets/images/rd.jpg',
 ]
+
 </script>
+
+
 
 <template>
   <div>

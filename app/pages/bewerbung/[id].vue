@@ -4,6 +4,7 @@ const router = useRouter();
 const { getJobById } = useJobs();
 const { adminFields } = useQuestions();
 const { evilScore } = useEvilState();
+const { $supabase } = useNuxtApp();
 
 // Job aus URL
 const jobId = route.params.id as string;
@@ -12,6 +13,8 @@ const job = getJobById(jobId);
 // State für Bewerbungsformular
 const showAdminForm = ref(false);
 const adminData = ref<Record<string, string>>({});
+const isSubmitting = ref(false);
+const submitError = ref<string | null>(null);
 
 // Quiz Flow mit Callback zum Formular (kein automatischer Reset)
 const { currentQuestion, progress, selectAnswer, resetScores } = useQuizFlow({
@@ -33,9 +36,35 @@ onMounted(() => {
 });
 
 // Bewerbung absenden
-const submitApplication = () => {
-    alert(`Bewerbung für ${job?.title} versendet!\nEvil Score: ${evilScore.value}\nDaten: ${JSON.stringify(adminData.value)}`);
-    router.push('/');
+const submitApplication = async () => {
+    isSubmitting.value = true;
+    submitError.value = null;
+
+    try {
+        const { data, error } = await $supabase
+            .from('application')
+            .insert({
+                name: adminData.value.name,
+                email: adminData.value.email,
+                motivation: adminData.value.motivation || null,
+                salary: adminData.value.salary ? parseFloat(adminData.value.salary) : null,
+                availability: adminData.value.availability || null,
+                evil_score: evilScore.value|| null
+            })
+            .select()
+            .single();
+
+        if (error) throw error;
+
+        // Erfolg!
+        alert(`Bewerbung für ${job?.title} erfolgreich versendet!\nEvil Score: ${evilScore.value}`);
+        router.push('/');
+    } catch (err: any) {
+        console.error('Fehler beim Speichern:', err);
+        submitError.value = err.message || 'Ein Fehler ist aufgetreten';
+    } finally {
+        isSubmitting.value = false;
+    }
 };
 </script>
 
@@ -87,6 +116,11 @@ const submitApplication = () => {
           <div v-else-if="showAdminForm">
             <h3 class="text-white text-lg mb-6">Letzter Schritt: Deine Daten</h3>
             
+            <!-- Fehlermeldung -->
+            <div v-if="submitError" class="mb-4 p-4 bg-red-500/20 border border-red-500 rounded-evil-md">
+              <p class="text-red-400 text-sm">{{ submitError }}</p>
+            </div>
+
             <div class="space-y-4">
               <div v-for="field in adminFields" :key="field.id">
                 <label class="block text-sm font-bold text-evil-light mb-2">
@@ -103,9 +137,10 @@ const submitApplication = () => {
 
             <BaseButton 
               @click="submitApplication"
+              :disabled="isSubmitting"
               class="w-full mt-8 text-center"
             >
-              BEWERBUNG ABSENDEN
+              {{ isSubmitting ? 'WIRD GESENDET...' : 'BEWERBUNG ABSENDEN' }}
             </BaseButton>
           </div>
 

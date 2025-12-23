@@ -1,82 +1,98 @@
 <script setup lang="ts">
+import type { Job } from '~/composables/useJobs';
+
 const route = useRoute();
 const router = useRouter();
 const { getJobById } = useJobs();
-const { adminFields } = useQuestions();
-const { evilScore } = useEvilState();
+const { allApplicationQuestions, adminFields } = useQuestions();
+const { resetScores, processAnswer, evilScore } = useEvilState();
 
-// Job aus URL
 const jobId = route.params.id as string;
-const job = getJobById(jobId);
 
-// State für Bewerbungsformular
+// Job async laden
+const job = ref<Job | null>(null);
+const jobLoading = ref(true);
+
+// State für den Prozess
+const step = ref(0);
 const showAdminForm = ref(false);
 const adminData = ref<Record<string, string>>({});
 
-// Quiz Flow mit Callback zum Formular (kein automatischer Reset)
-const { currentQuestion, progress, selectAnswer, resetScores } = useQuizFlow({
-    onComplete: () => { showAdminForm.value = true; },
-    autoReset: false
+// Init: Job laden und Scores zurücksetzen beim Start
+onMounted(async () => {
+  job.value = await getJobById(jobId);
+  jobLoading.value = false;
+  resetScores();
 });
 
-// Prüfe beim Start ob User vom Quiz kommt (via Query-Parameter)
-const fromQuiz = route.query.fromQuiz === 'true';
+const currentQuestion = computed(() => allApplicationQuestions[step.value]);
+const progress = computed(() => ((step.value + 1) / allApplicationQuestions.length) * 100);
 
-onMounted(() => {
-    if (fromQuiz) {
-        // User kommt vom Quiz-Result -> direkt Formular zeigen
-        showAdminForm.value = true;
-    } else {
-        // Frischer Start von Stellenanzeige -> Reset durchführen
-        resetScores();
-    }
-});
+// Antwort wählen
+const selectAnswer = (option: any) => {
+  processAnswer(option);
 
-// Bewerbung absenden
+  if (step.value < allApplicationQuestions.length - 1) {
+    step.value++;
+  } else {
+    showAdminForm.value = true;
+  }
+};
+
 const submitApplication = () => {
-    alert(`Bewerbung für ${job?.title} versendet!\nEvil Score: ${evilScore.value}\nDaten: ${JSON.stringify(adminData.value)}`);
-    router.push('/');
+  alert(`Bewerbung für ${job.value?.title} versendet!\nEvil Score: ${evilScore.value}\nDaten: ${JSON.stringify(adminData.value)}`);
+  router.push('/');
 };
 </script>
 
 <template>
-  <div class="min-h-screen py-12 px-4 flex items-center justify-center">
-    <div class="max-w-xl w-full">
+  <div class="min-h-screen py-12 px-4">
+    <div class="max-w-xl mx-auto">
+
+      <!-- Loading State -->
+      <template v-if="jobLoading">
+        <ContentCard padding="lg" class="text-center">
+          <p class="text-4xl mb-4 animate-pulse">⏳</p>
+          <p class="text-evil-mid">Lade Bewerbungsformular...</p>
+        </ContentCard>
+      </template>
       
-      <template v-if="job">
+      <template v-else-if="job">
+        
         <ContentCard padding="lg">
           
           <!-- Header -->
-          <div class="text-center mb-8">
+          <div class="mb-6">
             <p class="text-evil-mid text-sm uppercase tracking-wider mb-1">Bewerbung für</p>
-            <h1 class="text-evil-red text-2xl">{{ job.title }}</h1>
+            <h2 class="text-white text-xl">{{ job.title }}</h2>
           </div>
 
-          <!-- Progress Bar - nur während der Fragen -->
+          <!-- Progress Bar -->
           <div v-if="!showAdminForm" class="mb-8">
-            <div class="flex justify-end text-xs text-evil-mid mb-2">
+            <div class="flex justify-between text-xs text-evil-mid mb-2">
+              <span>Frage {{ step + 1 }} von {{ allApplicationQuestions.length }}</span>
               <span>{{ Math.round(progress) }}%</span>
             </div>
             <div class="h-1 bg-evil-dark rounded-full overflow-hidden">
               <div 
-                class="h-full bg-evil-red transition-all duration-500"
+                class="h-full bg-evil-red transition-all duration-300"
                 :style="{ width: `${progress}%` }"
               ></div>
             </div>
           </div>
-          
+
           <!-- Fragen -->
-          <div v-if="currentQuestion && !showAdminForm">
-            <h3 class="text-white text-lg mb-6">
+          <div v-if="!showAdminForm && currentQuestion">
+            <h3 class="text-white text-lg mb-6 min-h-[60px]">
               {{ currentQuestion.text }}
             </h3>
-            
+
             <div class="space-y-3">
               <button 
                 v-for="(opt, index) in currentQuestion.options" 
                 :key="index"
                 @click="selectAnswer(opt)"
-                class="w-full text-left p-4 bg-evil-dark/50 border border-evil-light/20 rounded-evil-md text-evil-light hover:bg-evil-red hover:border-evil-red hover:text-white transition-all"
+                class="w-full text-left p-4 bg-evil-dark/50 border border-evil-light/20 rounded-evil-md text-evil-light hover:bg-evil-mid/30 hover:border-evil-light/40 transition-all"
               >
                 {{ opt.label }}
               </button>
@@ -84,7 +100,7 @@ const submitApplication = () => {
           </div>
 
           <!-- Admin Formular -->
-          <div v-else-if="showAdminForm">
+          <div v-else>
             <h3 class="text-white text-lg mb-6">Letzter Schritt: Deine Daten</h3>
             
             <div class="space-y-4">
@@ -103,32 +119,17 @@ const submitApplication = () => {
 
             <BaseButton 
               @click="submitApplication"
+              type="submit"
               class="w-full mt-8 text-center"
             >
               BEWERBUNG ABSENDEN
             </BaseButton>
           </div>
 
-          <!-- Loading State -->
-          <div v-else class="text-center py-8">
-            <p class="text-evil-mid">Laden...</p>
-          </div>
-          
         </ContentCard>
+
       </template>
 
-      <!-- Job nicht gefunden -->
-      <template v-else>
-        <ContentCard padding="lg" class="text-center">
-          <p class="text-6xl mb-6">☠️</p>
-          <h1 class="text-white text-xl mb-4">Job nicht gefunden</h1>
-          <p class="text-evil-mid mb-8">Diese Position existiert nicht.</p>
-          <BaseButton href="/karriere" variant="secondary">
-            Zurück zur Karriereübersicht
-          </BaseButton>
-        </ContentCard>
-      </template>
-      
     </div>
   </div>
 </template>

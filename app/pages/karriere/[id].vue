@@ -4,28 +4,46 @@ const { getJobById, getDepartmentLabel } = useJobs();
 
 // Job-ID aus der URL
 const jobId = route.params.id as string;
-const job = getJobById(jobId);
+
+// Job async laden
+const job = ref<Awaited<ReturnType<typeof getJobById>>>(null);
+const loading = ref(true);
+
+onMounted(async () => {
+    job.value = await getJobById(jobId);
+    loading.value = false;
+});
 
 // Bild-Pfad basierend auf Department (hr, rd, it, finance, facility)
 const heroImage = computed(() => 
-    job ? `/design/assets/images/${job.department}.jpg` : ''
+    job.value ? `/design/assets/images/${job.value.department}.jpg` : ''
 );
 
 // Department-Label für die Anzeige
 const departmentLabel = computed(() => 
-    job ? getDepartmentLabel(job.department) : ''
+    job.value ? getDepartmentLabel(job.value.department) : ''
 );
 </script>
 
 <template>
   <div>
+    <!-- Loading State -->
+    <template v-if="loading">
+      <section class="py-24 px-4 text-center">
+        <div class="max-w-md mx-auto">
+          <p class="text-4xl mb-6 animate-pulse">⏳</p>
+          <p class="text-evil-mid">Lade Stellenbeschreibung...</p>
+        </div>
+      </section>
+    </template>
+
     <!-- Job gefunden -->
-    <template v-if="job">
+    <template v-else-if="job">
       
       <!-- Hero mit Department-spezifischem Bild -->
       <HeroSection 
         :image="heroImage"
-        :title="job.title"
+        :title="job.title!"
         :subtitle="departmentLabel"
         :full-height="true"
       />
@@ -76,12 +94,12 @@ const departmentLabel = computed(() =>
               </h3>
               <ul class="space-y-3">
                 <li 
-                  v-for="skills in job.skills" 
-                  :key="skills" 
+                  v-for="skill in job.skills" 
+                  :key="skill" 
                   class="flex items-start text-evil-light/80"
                 >
                   <span class="text-evil-red mr-3 mt-1">▸</span>
-                  {{ skills }}
+                  {{ skill }}
                 </li>
               </ul>
             </ContentCard>

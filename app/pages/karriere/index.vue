@@ -1,6 +1,9 @@
 <script setup lang="ts">
 // Karriere-Übersicht
-const { jobs, DEPARTMENT_LABELS } = useJobs();
+const { jobs, loading, error, DEPARTMENT_LABELS, fetchJobs } = useJobs();
+
+// Jobs laden beim Seitenaufruf
+await fetchJobs();
 </script>
 
 <template>

@@ -21,330 +21,88 @@ export const DEPARTMENT_LABELS: Record<Department, string> = {
 export interface Job {
     id: string;
     title: string;
-    department: Department;  // Interner Schlüssel (hr, rd, it, etc.)
-    // Tag-Attribute für das Matching-System
+    department: Department;
     expertise: Expertise;
     hierarchy: Hierarchy;
     approach: Approach;
     risk: Risk;
-    // Bestehende Felder
     description: string;
     tasks: string[];
     skills: string[];
 }
 
 export const useJobs = () => {
-    const jobs: Job[] = [
-        {
-            id: '001',
-            title: 'Talent Acquisition Manager',
-            department: 'hr',
-            expertise: 'Social_Engineering',
-            hierarchy: 'Mastermind',
-            approach: 'Manipulative',
-            risk: 'Safe_Desk',
-            description: 'Unsere Fluktuationsrate ist branchenüblich hoch (ca. 40% pro Agenten-Infiltration). Wir suchen einen Recruiter, der schnell für Nachschub an loyalem, uniformiertem Personal sorgt, das keine Fragen stellt.',
-            tasks: [
-                'Massen-Recruiting von Wachpersonal (Anforderungsprofil: Sportlich, schlechtes Zielvermögen, namenlos)',
-                'Onboarding neuer Handlanger (Ausgabe der Uniformen, Unterzeichnung der Verschwiegenheitserklärung mit Blut)',
-                'Verwaltung der „Vermissten"-Akten'
-            ],
-            skills: [
-                'Empathielosigkeit',
-                'Erfahrung mit befristeten Arbeitsverhältnissen (sehr befristet)',
-                'Hohe Resilienz gegenüber spontanen Vorgesetzten-Wechseln'
-            ]
-        },
-        {
-            id: '002',
-            title: 'Senior Engineer für Laser & Falltüren',
-            department: 'rd',
-            expertise: 'Heavy_Machinery',
-            hierarchy: 'Mastermind',
-            approach: 'Destructive',
-            risk: 'Lethal',
-            description: 'Dr. Evil & Söhne steht für Qualität. Wenn wir auf den roten Knopf drücken, muss es funktionieren. Wir suchen einen Ingenieur, der Perfektion liebt.',
-            tasks: [
-                'Wartung und Ölung der hydraulischen Falltüren im Chefbüro',
-                'Integration von Laserwaffen auf exotische Trägersysteme (Drohnen, Haie, Monde)',
-                'Selbstzerstörungs-Countdown Wartung'
-            ],
-            skills: [
-                'Master in Maschinenbau und Moralunterdrückung',
-                'Leidenschaft für dramatisch große rote Knöpfe',
-                'Kompromisslose Liebe zum Detail: Ein Countdown darf niemals stoppen!'
-            ]
-        },
-        {
-            id: '003',
-            title: 'Full-Stack Hacker (m/w/d)',
-            department: 'it',
-            expertise: 'Digital',
-            hierarchy: 'Henchman',
-            approach: 'Obedient',
-            risk: 'Safe_Desk',
-            description: 'Wir suchen einen Coder, der keine ethischen Grenzen kennt, sondern nur technische Herausforderungen.',
-            tasks: [
-                'Entwicklung von bedrolichen E-Mail-Verteilern (Dark Mode only)',
-                'Firewall-Penetration bei Zentralbanken',
-                'Entlaufende Python des Chefs aufspühren'
-            ],
-            skills: [
-                'Flexiblen moralischen Kompass („Datenschutz" = „Datenschatz")',
-                'C++, LavaScript, DarkWeb-APIs',
-                'Eintrag im Interpol-Register ist ein Plus'
-            ]
-        },
-        {
-            id: '004',
-            title: 'Head of Money Laundering',
-            department: 'finance',
-            expertise: 'Economy',
-            hierarchy: 'Mastermind',
-            approach: 'Greedy',
-            risk: 'Safe_Desk',
-            description: 'Weltherrschaft kostet Geld. Vulkane mieten sich nicht von allein. Wir suchen ein Finanzgenie, das Bilanzen so kreativ frisiert wie unser CEO seine Katze.',
-            tasks: [
-                'Verschleierung von Geldströmen (Cayman Islands)',
-                'Umwandlung von Lösegeld in Goldbarren',
-                'Kostenstellenrechnung „Projekt Apokalypse"'
-            ],
-            skills: [
-                'Kreative Buchführung',
-                'Nennung aller Steuerparadiese',
-                'Steuervermeidung als Kunstform'
-            ]
-        },
-        {
-            id: '005',
-            title: 'Specialist for Surface Cleaning',
-            department: 'facility',
-            expertise: 'Heavy_Machinery',
-            hierarchy: 'Minion',
-            approach: 'Obedient',
-            risk: 'Toxic',
-            description: 'Wo gehobelt wird, fallen Späne – und wo die Weltherrschaft geplant wird, fallen manchmal Mitarbeiter. Wir suchen eine diskrete Fachkraft, die unsere vulkanbasierte Zentrale sauber hält.',
-            tasks: [
-                'Reinigung nach „enttäuschenden" Performance-Reviews',
-                'Polieren der Doomsday-Devices',
-                'Reinigung des Haifischbeckens (von innen)'
-            ],
-            skills: [
-                'Diskretion',
-                'eigener Schutzanzug'
-            ]
-        },
-        {
-            id: '006',
-            title: 'VP of Global Gaslighting',
-            department: 'hr',
-            expertise: 'Social_Engineering',
-            hierarchy: 'Mastermind',
-            approach: 'Manipulative',
-            risk: 'Safe_Desk',
-            description: 'Wir nennen es nicht "Weltherrschaft", wir nennen es "Globale Vereinheitlichung der Führungskompetenz". Wir suchen einen PR-Profi, der unsere finsteren Pläne als Philanthropie verkauft.',
-            tasks: [
-                'Verfassen von Pressemitteilungen nach "bedauerlichen Unfällen" mit Laserwaffen',
-                'Erpresservideos scripten (Fokus auf bedrohliche Rhetorik)',
-                'Leitung der Abteilung "Desinformation & Fake News"'
-            ],
-            skills: [
-                'Charismatisches Lügen',
-                'Erfahrung im Krisenmanagement (wenn der Geheimagent doch entkommt)',
-                'Master in Psychologie oder Politikwissenschaften'
-            ]
-        },
-        {
-            id: '007',
-            title: 'Junior Henchman (Patrol Duty)',
-            department: 'facility',
-            expertise: 'Heavy_Machinery',
-            hierarchy: 'Minion',
-            approach: 'Obedient',
-            risk: 'Lethal',
-            description: 'Suchen Sie einen Job mit viel Bewegung und frischer Luft auf einer abgelegenen Insel? Als Junior Henchman sind Sie unsere erste Verteidigungslinie (und meistens die erste Verlustmeldung).',
-            tasks: [
-                'Patrouillieren in schlecht beleuchteten Gängen',
-                'Untersuchen von seltsamen Geräuschen ("Ist da wer?")',
-                'Dramatisches Umfallen bei Feindkontakt'
-            ],
-            skills: [
-                'Fähigkeit, Befehle nicht zu hinterfragen',
-                'Grundkenntnisse: Maschinenpistole (Hüftschuss)',
-                'Keine familiären Bindungen bevorzugt'
-            ]
-        },
-        {
-            id: '008',
-            title: 'UX-Designer für Giant Screens',
-            department: 'it',
-            expertise: 'Digital',
-            hierarchy: 'Henchman',
-            approach: 'Manipulative',
-            risk: 'Safe_Desk',
-            description: 'Wenn der Chef die Weltkarte aufruft, muss sie rot blinken. Wir suchen einen Designer für unsere 50-Meter-Videowand im Kontrollraum.',
-            tasks: [
-                'Design von Welteroberungs-Fortschrittsbalken',
-                'Erstellung von bedrohlichen "ACCESS DENIED" Animationen',
-                'Sicherstellen, dass der Totenkopf-Cursor pixelgenau ist'
-            ],
-            skills: [
-                'Figma, Adobe XD, Evil-UI',
-                'Gespür für Dramaturgie und Rot-Töne',
-                'Erfahrung mit Interfaces, die Funken sprühen'
-            ]
-        },
-        {
-            id: '009',
-            title: 'Acquisition Manager: Secret Lairs',
-            department: 'finance',
-            expertise: 'Economy',
-            hierarchy: 'Henchman',
-            approach: 'Greedy',
-            risk: 'Safe_Desk',
-            description: 'Vulkane, Unterwasserstationen, Mondbasen – Immobilien sind unser Fundament. Wir suchen einen Makler ohne Skrupel für extreme Locations.',
-            tasks: [
-                'Verhandlung mit korrupten Regierungen über Insel-Käufe',
-                'Prüfung der Bausubstanz von verlassenen Sanatorien',
-                'Organisation von Tarnfirmen für den Grundbucheintrag'
-            ],
-            skills: [
-                'Immobilienrecht (International & Interstellar)',
-                'Verhandlungsgeschick',
-                'Keine Angst vor Schimmel oder Geistern'
-            ]
-        },
-        {
-            id: '010',
-            title: 'Lead Scientist: Weather Manipulation',
-            department: 'rd',
-            expertise: 'Heavy_Machinery',
-            hierarchy: 'Mastermind',
-            approach: 'Destructive',
-            risk: 'Toxic',
-            description: 'Warum auf den Sommer warten, wenn man ihn erpressen kann? Leiten Sie unser Team "Klimawandel-Beschleunigung".',
-            tasks: [
-                'Kalibrierung der Ionen-Kanone im Orbit',
-                'Erzeugung lokaler Schneestürme über Geheimdiensten',
-                'Lachen, während es blitzt und donnert'
-            ],
-            skills: [
-                'Promotion in Meteorologie oder Wahnsinn',
-                'Erfahrung mit Teslaspulen',
-                'Hass auf sonnige Tage'
-            ]
-        },
-        {
-            id: '011',
-            title: 'Botnet Operator (Social Media)',
-            department: 'it',
-            expertise: 'Digital',
-            hierarchy: 'Minion',
-            approach: 'Destructive',
-            risk: 'Safe_Desk',
-            description: 'Zerstören Sie Demokratien bequem vom Home-Office aus. Wir suchen Nachwuchs-Hacker für unsere Troll-Armee.',
-            tasks: [
-                'Verbreitung von Verschwörungstheorien',
-                'Automatisierte Likes für die Posts des Supreme Leader',
-                'DDoS-Attacken auf Kätzchen-Videos'
-            ],
-            skills: [
-                'Scripting (Python, Bash)',
-                'Tippen mit 400 Anschlägen pro Minute',
-                'Völlige moralische Abstumpfung'
-            ]
-        },
-        {
-            id: '012',
-            title: 'Budget Controller: Uranium & Snacks',
-            department: 'finance',
-            expertise: 'Economy',
-            hierarchy: 'Minion',
-            approach: 'Greedy',
-            risk: 'Safe_Desk',
-            description: 'Auch das Böse muss sparen. Wir suchen einen Controller, der die Kosten für nukleares Material und die Kantinenverpflegung optimiert.',
-            tasks: [
-                'Preisvergleich auf dem Schwarzmarkt für Plutonium',
-                'Kürzung des Budgets für Sicherheitsgeländer',
-                'Abrechnung von Spesen für "Geschäftsreisen" (Flucht)'
-            ],
-            skills: [
-                'Excel (Level: Endboss)',
-                'Erbsenzählerei',
-                'Ignorieren von Sicherheitsvorschriften zur Kostensenkung'
-            ]
-        },
-        {
-            id: '013',
-            title: 'Senior Interrogator',
-            department: 'hr',
-            expertise: 'Social_Engineering',
-            hierarchy: 'Henchman',
-            approach: 'Destructive',
-            risk: 'Toxic',
-            description: 'Sie können gut zuhören und noch besser nachfragen? In unserem Kellerabteil warten interessante Gesprächspartner auf Ihre "Methoden".',
-            tasks: [
-                'Informationsgewinnung durch "kreative Befragung"',
-                'Bedienung diverser medizinischer Geräte (zweckentfremdet)',
-                'Dokumentation der Geständnisse'
-            ],
-            skills: [
-                'Anatomische Kenntnisse',
-                'Geduld',
-                'Ein sehr festes Händedruck'
-            ]
-        },
-        {
-            id: '014',
-            title: 'Monorail Driver (Secret Base)',
-            department: 'facility',
-            expertise: 'Heavy_Machinery',
-            hierarchy: 'Minion',
-            approach: 'Obedient',
-            risk: 'Lethal',
-            description: 'Unsere Basis ist riesig. Wir brauchen jemanden, der die Agenten vom Eingang zum Verlies fährt – pünktlich und ohne Fragen.',
-            tasks: [
-                'Führen der internen Einschienenbahn',
-                'Durchsage der Sicherheitsinstruktionen ("Hände im Wagen behalten")',
-                'Notbremsung, wenn der Held auf das Dach springt'
-            ],
-            skills: [
-                'Führerschein Klasse B (für Bahnen)',
-                'Stoizismus',
-                'Uniformtragekompetenz'
-            ]
-        },
-        {
-            id: '015',
-            title: 'Toxic Waste Disposal Intern',
-            department: 'rd',
-            expertise: 'Heavy_Machinery',
-            hierarchy: 'Minion',
-            approach: 'Obedient',
-            risk: 'Toxic',
-            description: 'Der perfekte Einstieg in die Welt des Verbrechens! Entsorgen Sie die fehlgeschlagenen Experimente von Abteilung 4.',
-            tasks: [
-                'Transport von Fässern mit grün leuchtendem Schleim',
-                'Fütterung der mutierten Riesenpflanze "Gertrud"',
-                'Wischen, wenn ein Behälter leckt'
-            ],
-            skills: [
-                'Kein Kinderwunsch (wegen der Strahlung)',
-                'Hohe Schmerztoleranz',
-                'Eigener Geigerzähler ist von Vorteil'
-            ]
-        },
-    ];
+    const supabase = useSupabaseClient();
 
-    const getJobById = (id: string) => jobs.find(job => job.id === id);
+    // Reaktive States
+    const jobs = ref<Job[]>([]);
+    const loading = ref(true);
+    const error = ref<string | null>(null);
+
+    // Alle Jobs laden
+    const fetchJobs = async () => {
+        loading.value = true;
+        error.value = null;
+
+        const { data, error: fetchError } = await supabase
+            .from('jobs')
+            .select('*')
+            .order('id');
+
+        if (fetchError) {
+            error.value = fetchError.message;
+            console.error('Fehler beim Laden der Jobs:', fetchError);
+        } else {
+            jobs.value = (data as Job[]) || [];
+        }
+
+        loading.value = false;
+    };
+
+    // Einzelnen Job nach ID laden
+    const getJobById = async (id: string): Promise<Job | null> => {
+        // Erst im Cache schauen
+        const cachedJob = jobs.value.find(job => job.id === id);
+        if (cachedJob) {
+            return cachedJob;
+        }
+
+        // Falls nicht im Cache, aus Supabase laden
+        const { data, error: fetchError } = await supabase
+            .from('jobs')
+            .select('*')
+            .eq('id', id)
+            .single();
+
+        if (fetchError) {
+            console.error('Fehler beim Laden des Jobs:', fetchError);
+            return null;
+        }
+
+        return data as Job;
+    };
 
     // Hilfsfunktion: Jobs nach Expertise filtern
     const getJobsByExpertise = (expertise: Expertise) =>
-        jobs.filter(job => job.expertise === expertise);
+        jobs.value.filter(job => job.expertise === expertise);
 
     // Hilfsfunktion: Department-Label holen
     const getDepartmentLabel = (department: Department): string =>
         DEPARTMENT_LABELS[department];
 
-    return { jobs, getJobById, getJobsByExpertise, getDepartmentLabel, DEPARTMENT_LABELS };
+    // Jobs beim ersten Aufruf laden
+    if (import.meta.client) {
+        fetchJobs();
+    }
+
+    return {
+        jobs,
+        loading,
+        error,
+        fetchJobs,
+        getJobById,
+        getJobsByExpertise,
+        getDepartmentLabel,
+        DEPARTMENT_LABELS
+    };
 };

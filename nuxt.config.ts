@@ -2,7 +2,12 @@
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
-  modules: ['@nuxtjs/tailwindcss'],
+  modules: ['@nuxtjs/tailwindcss', '@nuxtjs/supabase'],
+
+  // Supabase-Konfiguration
+  supabase: {
+    redirect: false // Kein automatischer Redirect bei fehlender Auth
+  },
 
   // Globale CSS-Datei einbinden
   css: ['~/assets/css/main.css'],

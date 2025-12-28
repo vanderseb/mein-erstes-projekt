@@ -24,7 +24,7 @@ await fetchJobs();
           <p class="text-evil-light/80 mb-6">
             Finde deinen perfekten Job in unserem wissenschaftlich fragwürdigen Eignungstest.
           </p>
-          <BaseButton href="/quiz">
+          <BaseButton href="/assessment">
             Quiz starten →
           </BaseButton>
         </ContentCard>

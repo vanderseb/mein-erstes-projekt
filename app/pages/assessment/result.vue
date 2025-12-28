@@ -9,13 +9,13 @@ const {
 
 // Jobs die zur ermittelten Expertise passen
 const matchingJobs = computed(() => {
-    if (!finalExpertise.value) return jobs; // Fallback: alle Jobs
+    if (!finalExpertise.value) return jobs.value; // Fallback: alle Jobs (unwrapped)
     return getJobsByExpertise(finalExpertise.value);
 });
 
 // Der beste Job basierend auf dem Matching-Algorithmus
 const winner = computed(() => {
-    if (matchingJobs.value.length === 0) return jobs[0]; // Fallback
+    if (matchingJobs.value.length === 0) return jobs.value[0]; // Fallback
     return findBestJob(matchingJobs.value);
 });
 
@@ -76,7 +76,7 @@ const expertiseLabels: Record<string, string> = {
           </span>
         </div>
         
-        <BaseButton :href="`/bewerbung/${winner.id}?fromQuiz=true`" class="w-full text-center">
+        <BaseButton :href="`/assessment?jobId=${winner.id}&fromQuiz=true`" class="w-full text-center">
           Job annehmen
         </BaseButton>
       </ContentCard>
@@ -98,7 +98,7 @@ const expertiseLabels: Record<string, string> = {
               <span class="text-evil-mid text-xs ml-2">({{ job.matches }}/3 Treffer)</span>
             </div>
             <NuxtLink 
-              :to="`/bewerbung/${job.id}?fromQuiz=true`" 
+              :to="`/assessment?jobId=${job.id}&fromQuiz=true`" 
               class="text-evil-red text-sm hover:text-white transition-colors"
             >
               Wählen
@@ -109,7 +109,7 @@ const expertiseLabels: Record<string, string> = {
 
       <!-- Back Link -->
       <div class="text-center space-y-2">
-        <NuxtLink to="/quiz" class="text-evil-red text-sm hover:text-white transition-colors block">
+        <NuxtLink to="/assessment" class="text-evil-red text-sm hover:text-white transition-colors block">
           ← Quiz wiederholen
         </NuxtLink>
         <NuxtLink to="/karriere" class="text-evil-mid text-sm hover:text-evil-light transition-colors block">

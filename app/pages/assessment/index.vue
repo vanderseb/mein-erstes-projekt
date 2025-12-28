@@ -14,7 +14,8 @@ const fromQuiz = route.query.fromQuiz === 'true';
 const job = ref<Job | null>(null);
 const loading = ref(true);
 const showAdminForm = ref(false);
-const adminData = ref<Record<string, string>>({});
+const adminData = ref<Record<string, any>>({});
+const errors = ref<Record<string, string>>({});
 
 // --- COMPUTED ---
 const pageTitle = computed(() => {
@@ -55,10 +56,69 @@ const onGameComplete = () => {
   }
 };
 
+// File Upload Handler
+const handleFileUpload = (event: Event, field: any) => {
+  const target = event.target as HTMLInputElement;
+  const file = target.files?.[0];
+  
+  if (file) {
+    // Validierung: Größe
+    if (field.maxSize && file.size > field.maxSize) {
+      errors.value[field.id] = field.errorMessage || 'Datei ist zu groß.';
+      adminData.value[field.id] = null;
+      return;
+    }
+    // Validierung: Typ (einfacher Check)
+    if (field.accept && !file.type.match(field.accept.replace('*', '.*'))) {
+      errors.value[field.id] = field.errorMessage || 'Falsches Dateiformat.';
+      adminData.value[field.id] = null;
+      return;
+    }
+
+    // Alles ok
+    errors.value[field.id] = '';
+    adminData.value[field.id] = file;
+  }
+};
+
 // Formular Absenden
 const submitApplication = () => {
-  if (!job.value) return; // Should not happen
-  alert(`Bewerbung für ${job.value.title} versendet!\nEvil Score: ${evilScore.value}\nDaten: ${JSON.stringify(adminData.value)}`);
+  if (!job.value) return; 
+
+  // Reset Errors
+  errors.value = {};
+  let isValid = true;
+
+  // Validierung aller Felder
+  for (const field of adminFields) {
+    const value = adminData.value[field.id];
+
+    // 1. Pflichtfelder Check (außer CV für den Moment optional?) Aber wir machen mal alles Pflicht
+    if (!value && value !== 0) {
+      errors.value[field.id] = 'Dieses Feld ist erforderlich.';
+      isValid = false;
+      continue;
+    }
+
+    // 2. Pattern Check (für Text/Number inputs)
+    if (field.pattern && typeof value === 'string') {
+      const regex = new RegExp(field.pattern);
+      if (!regex.test(value)) {
+        errors.value[field.id] = field.errorMessage || 'Ungültiges Format.';
+        isValid = false;
+      }
+    }
+  }
+
+  if (!isValid) return;
+
+  // Daten für Alert aufbereiten (File objekt ist nicht schön in JSON)
+  const displayData = { ...adminData.value };
+  if (displayData.cv) {
+    displayData.cv = `Datei: ${(displayData.cv as File).name} (${Math.round((displayData.cv as File).size / 1024)} KB)`;
+  }
+
+  alert(`Bewerbung für ${job.value.title} versendet!\nEvil Score: ${evilScore.value}\nDaten: ${JSON.stringify(displayData, null, 2)}`);
   router.push('/');
 };
 </script>
@@ -103,13 +163,26 @@ const submitApplication = () => {
             <div class="space-y-4">
               <div v-for="field in adminFields" :key="field.id">
                 <label class="block text-sm font-bold text-evil-light mb-2">
-                  {{ field.label }}
+                  {{ field.label }} <span v-if="errors[field.id]" class="text-evil-red text-xs ml-2">{{ errors[field.id] }}</span>
                 </label>
+                
+                <!-- File Input -->
                 <input 
+                  v-if="field.type === 'file'"
+                  type="file"
+                  :accept="field.accept"
+                  @change="(e) => handleFileUpload(e, field)"
+                  class="w-full text-evil-light file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-evil-red file:text-white hover:file:bg-evil-red/80 cursor-pointer text-sm"
+                />
+
+                <!-- Text/Number Input -->
+                <input 
+                  v-else
                   v-model="adminData[field.id]"
                   :type="field.type"
                   :placeholder="field.placeholder"
                   class="w-full bg-evil-dark border border-evil-light/20 text-evil-light p-3 rounded-evil-md focus:border-evil-red focus:outline-none transition-colors placeholder:text-evil-mid"
+                  :class="{ 'border-evil-red': errors[field.id] }"
                 />
               </div>
             </div>

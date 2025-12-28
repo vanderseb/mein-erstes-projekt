@@ -52,7 +52,11 @@ export interface AdminField {
     id: string;
     label: string;
     placeholder: string;
-    type: 'text' | 'email';
+    type: 'text' | 'email' | 'number' | 'file';
+    pattern?: string; // Regex Pattern für Validierung
+    accept?: string;  // Für Dateiuploads
+    maxSize?: number; // Max Bytes für Uploads
+    errorMessage?: string; // Fehlertext bei ungültiger Eingabe
 }
 
 export const useQuestions = () => {
@@ -218,11 +222,57 @@ export const useQuestions = () => {
 
     // --- ADMIN-FELDER für Bewerbungsformular ---
     const adminFields: AdminField[] = [
-        { id: 'salary', label: 'Gehaltsvorstellung (BTC)', placeholder: 'Jahresbrutto in Bitcoin', type: 'text' },
-        { id: 'availability', label: 'Verfügbarkeit', placeholder: 'TT.MM.JJJJ oder "Sofort nach Haft..."', type: 'text' },
-        { id: 'motivation', label: 'Aktueller Arbeitgeber & Wechselgrund', placeholder: "z.B. 'MI6 - Zu viel Bürokratie'", type: 'text' },
-        { id: 'name', label: 'Vollständiger Name', placeholder: 'Max Mustermann', type: 'text' },
-        { id: 'email', label: 'E-Mail Adresse', placeholder: 'max@evil-corp.com', type: 'email' }
+        {
+            id: 'salary',
+            label: 'Gehaltsvorstellung (BTC)',
+            placeholder: 'Jahresbrutto in Bitcoin',
+            type: 'number',
+            pattern: '^[0-9]+(\\.[0-9]+)?$',
+            errorMessage: 'Bitte nur positive Zahlen eingeben.'
+        },
+        {
+            id: 'availability',
+            label: 'Verfügbarkeit',
+            placeholder: 'DD.MM.JJJJ',
+            type: 'text',
+            pattern: '^(0[1-9]|[12][0-9]|3[01])\\.(0[1-9]|1[0-2])\\.\\d{4}$',
+            errorMessage: 'Format muss DD.MM.JJJJ sein.'
+        },
+        {
+            id: 'motivation',
+            label: 'Aktueller Arbeitgeber & Wechselgrund',
+            placeholder: "z.B. 'MI6 - Zu viel Bürokratie'",
+            type: 'text'
+        },
+        {
+            id: 'firstname',
+            label: 'Vorname',
+            placeholder: 'Max',
+            type: 'text'
+        },
+        {
+            id: 'lastname',
+            label: 'Nachname',
+            placeholder: 'Mustermann',
+            type: 'text'
+        },
+        {
+            id: 'email',
+            label: 'E-Mail Adresse',
+            placeholder: 'max@evil-corp.com',
+            type: 'email',
+            pattern: '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$',
+            errorMessage: 'Bitte gib eine gültige E-Mail-Adresse ein (z.B. name@beispiel.de).'
+        },
+        {
+            id: 'cv',
+            label: 'Lebenslauf (PDF)',
+            placeholder: '',
+            type: 'file',
+            accept: 'application/pdf',
+            maxSize: 5 * 1024 * 1024, // 5MB
+            errorMessage: 'Nur PDF Dateien bis max. 5MB.'
+        }
     ];
 
     // --- HELPER FUNKTIONEN ---

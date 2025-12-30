@@ -239,12 +239,6 @@ export const useQuestions = () => {
             errorMessage: 'Format muss DD.MM.JJJJ sein.'
         },
         {
-            id: 'motivation',
-            label: 'Aktueller Arbeitgeber & Wechselgrund',
-            placeholder: "z.B. 'MI6 - Zu viel Bürokratie'",
-            type: 'text'
-        },
-        {
             id: 'firstname',
             label: 'Vorname',
             placeholder: 'Max',

@@ -5,7 +5,7 @@ const route = useRoute();
 const router = useRouter();
 const { getJobById } = useJobs();
 const { adminFields } = useQuestions();
-const { evilScore } = useEvilState();
+const { evilScore, finalExpertise, selectedAttributes } = useEvilState();
 
 // --- STATE ---
 const jobId = route.query.jobId as string | undefined;
@@ -82,6 +82,7 @@ const handleFileUpload = (event: Event, field: any) => {
 };
 
 // Formular Absenden
+// Formular Absenden
 const submitApplication = () => {
   if (!job.value) return; 
 
@@ -93,7 +94,7 @@ const submitApplication = () => {
   for (const field of adminFields) {
     const value = adminData.value[field.id];
 
-    // 1. Pflichtfelder Check (außer CV für den Moment optional?) Aber wir machen mal alles Pflicht
+    // 1. Pflichtfelder Check
     if (!value && value !== 0) {
       errors.value[field.id] = 'Dieses Feld ist erforderlich.';
       isValid = false;
@@ -113,7 +114,15 @@ const submitApplication = () => {
   if (!isValid) return;
 
   // Daten für Alert aufbereiten (File objekt ist nicht schön in JSON)
-  const displayData = { ...adminData.value };
+  const displayData: Record<string, any> = { 
+    jobId: job.value.id,
+    expertise: finalExpertise.value,
+    risk: selectedAttributes.value.risk,
+    approach: selectedAttributes.value.approach,
+    hierarchy: selectedAttributes.value.hierarchy,
+    ...adminData.value 
+  };
+  
   if (displayData.cv) {
     displayData.cv = `Datei: ${(displayData.cv as File).name} (${Math.round((displayData.cv as File).size / 1024)} KB)`;
   }

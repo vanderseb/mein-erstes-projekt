@@ -120,6 +120,7 @@ const submitApplication = () => {
     risk: selectedAttributes.value.risk,
     approach: selectedAttributes.value.approach,
     hierarchy: selectedAttributes.value.hierarchy,
+    evilScore: evilScore.value,
     ...adminData.value 
   };
   

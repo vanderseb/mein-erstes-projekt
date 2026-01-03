@@ -19,7 +19,7 @@ export const DEPARTMENT_LABELS: Record<Department, string> = {
 };
 
 export interface Job {
-    id: string;
+    job_id: number;
     title: string;
     department: Department;
     expertise: Expertise;
@@ -47,7 +47,7 @@ export const useJobs = () => {
         const { data, error: fetchError } = await supabase
             .from('jobs')
             .select('*')
-            .order('id');
+            .order('job_id');
 
         if (fetchError) {
             error.value = fetchError.message;
@@ -60,9 +60,11 @@ export const useJobs = () => {
     };
 
     // Einzelnen Job nach ID laden
-    const getJobById = async (id: string): Promise<Job | null> => {
+    const getJobById = async (id: string | number): Promise<Job | null> => {
+        const numericId = typeof id === 'string' ? parseInt(id, 10) : id;
+
         // Erst im Cache schauen
-        const cachedJob = jobs.value.find(job => job.id === id);
+        const cachedJob = jobs.value.find(job => job.job_id === numericId);
         if (cachedJob) {
             return cachedJob;
         }
@@ -71,7 +73,7 @@ export const useJobs = () => {
         const { data, error: fetchError } = await supabase
             .from('jobs')
             .select('*')
-            .eq('id', id)
+            .eq('job_id', numericId)
             .single();
 
         if (fetchError) {

@@ -76,7 +76,7 @@ const expertiseLabels: Record<string, string> = {
           </span>
         </div>
         
-        <BaseButton :href="`/assessment?jobId=${winner.id}&fromQuiz=true`" class="w-full text-center">
+        <BaseButton :href="`/assessment?jobId=${winner.job_id}&fromQuiz=true`" class="w-full text-center">
           Job annehmen
         </BaseButton>
       </ContentCard>
@@ -90,7 +90,7 @@ const expertiseLabels: Record<string, string> = {
         <div class="space-y-3">
           <div 
             v-for="job in rankedJobs.slice(1)" 
-            :key="job.id" 
+            :key="job.job_id" 
             class="flex items-center justify-between py-2 border-b border-evil-light/10 last:border-0"
           >
             <div>
@@ -98,7 +98,7 @@ const expertiseLabels: Record<string, string> = {
               <span class="text-evil-mid text-xs ml-2">({{ job.matches }}/3 Treffer)</span>
             </div>
             <NuxtLink 
-              :to="`/assessment?jobId=${job.id}&fromQuiz=true`" 
+              :to="`/assessment?jobId=${job.job_id}&fromQuiz=true`" 
               class="text-evil-red text-sm hover:text-white transition-colors"
             >
               Wählen

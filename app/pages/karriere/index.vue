@@ -44,7 +44,7 @@ await fetchJobs();
           
           <ContentCard 
             v-for="job in jobs" 
-            :key="job.id" 
+            :key="job.job_id" 
             class="flex flex-col hover:border-evil-light/40 transition-colors"
           >
             <!-- Department Badge -->
@@ -63,7 +63,7 @@ await fetchJobs();
             </p>
             
             <!-- CTA -->
-            <BaseButton :href="`/karriere/${job.id}`" variant="secondary" class="w-full text-center">
+            <BaseButton :href="`/karriere/${job.job_id}`" variant="secondary" class="w-full text-center">
               Stellenbeschreibung →
             </BaseButton>
           </ContentCard>

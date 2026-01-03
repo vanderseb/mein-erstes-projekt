@@ -239,13 +239,13 @@ export const useQuestions = () => {
             errorMessage: 'Format muss DD.MM.JJJJ sein.'
         },
         {
-            id: 'firstname',
+            id: 'first_name',
             label: 'Vorname',
             placeholder: 'Max',
             type: 'text'
         },
         {
-            id: 'lastname',
+            id: 'last_name',
             label: 'Nachname',
             placeholder: 'Mustermann',
             type: 'text'

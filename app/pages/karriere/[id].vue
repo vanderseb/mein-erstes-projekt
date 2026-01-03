@@ -114,7 +114,7 @@ const departmentLabel = computed(() =>
             <p class="text-evil-mid mb-8">
               Der Bewerbungsprozess beinhaltet keine Sicherheitsüberprüfung, aber eventuell einen Hai-Test.
             </p>
-            <BaseButton :href="`/assessment?jobId=${job.id}`">
+            <BaseButton :href="`/assessment?jobId=${job.job_id}`">
               JETZT BEWERBEN
             </BaseButton>
           </ContentCard>

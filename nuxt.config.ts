@@ -6,7 +6,8 @@ export default defineNuxtConfig({
 
   // Supabase-Konfiguration
   supabase: {
-    redirect: false // Kein automatischer Redirect bei fehlender Auth
+    redirect: false, // Kein automatischer Redirect bei fehlender Auth
+    types: '' // Deaktiviert die Erwartung einer database.types.ts Datei
   },
 
   // Globale CSS-Datei einbinden

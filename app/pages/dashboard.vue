@@ -143,7 +143,7 @@ const handleStatusChange = async (app: Application, event: Event) => {
               <tbody class="divide-y divide-evil-light/10">
                 <tr v-for="app in filteredApplications" :key="app.application_id" class="hover:bg-evil-light/5 transition-colors">
                   <td class="py-4 pr-4">
-                    <span class="text-white font-medium">{{ app.firstname }} {{ app.lastname }}</span>
+                    <span class="text-white font-medium">{{ app.first_name }} {{ app.last_name }}</span>
                   </td>
                   <td class="py-4 pr-4 text-evil-light/70 text-sm">{{ app.email }}</td>
                   <td class="py-4 pr-4">

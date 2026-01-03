@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import type { Job } from '~/composables/useJobs';
+import { useApplications, type CreateApplicationInput } from '~/composables/useApplications';
 
 const route = useRoute();
 const router = useRouter();
 const { getJobById } = useJobs();
 const { adminFields } = useQuestions();
 const { evilScore, finalExpertise, selectedAttributes } = useEvilState();
+const { createApplication } = useApplications();
 
 // --- STATE ---
 const jobId = route.query.jobId as string | undefined;
@@ -13,6 +15,7 @@ const fromQuiz = route.query.fromQuiz === 'true';
 
 const job = ref<Job | null>(null);
 const loading = ref(true);
+const submitting = ref(false);
 const showAdminForm = ref(false);
 const adminData = ref<Record<string, any>>({});
 const errors = ref<Record<string, string>>({});
@@ -42,6 +45,15 @@ onMounted(async () => {
   // Mode: Allgemeines Quiz (kein Job geladen)
   loading.value = false;
 });
+
+// --- HELPER ---
+
+// Datum von DD.MM.YYYY zu YYYY-MM-DD konvertieren
+const convertDateToISO = (dateStr: string): string => {
+  const parts = dateStr.split('.');
+  if (parts.length !== 3) return dateStr;
+  return `${parts[2]}-${parts[1]}-${parts[0]}`;
+};
 
 // --- HANDLER ---
 
@@ -82,9 +94,8 @@ const handleFileUpload = (event: Event, field: any) => {
 };
 
 // Formular Absenden
-// Formular Absenden
-const submitApplication = () => {
-  if (!job.value) return; 
+const submitApplication = async () => {
+  if (!job.value || submitting.value) return; 
 
   // Reset Errors
   errors.value = {};
@@ -113,25 +124,37 @@ const submitApplication = () => {
 
   if (!isValid) return;
 
-  // Daten für Alert aufbereiten (File objekt ist nicht schön in JSON)
-  const displayData: Record<string, any> = { 
-    jobId: job.value.id,
-    expertise: finalExpertise.value,
-    risk: selectedAttributes.value.risk,
-    approach: selectedAttributes.value.approach,
-    hierarchy: selectedAttributes.value.hierarchy,
-    evilScore: evilScore.value,
-    ...adminData.value 
-  };
-  
-  if (displayData.cv) {
-    displayData.cv = `Datei: ${(displayData.cv as File).name} (${Math.round((displayData.cv as File).size / 1024)} KB)`;
-  }
+  // Formular absenden
+  submitting.value = true;
 
-  alert(`Bewerbung für ${job.value.title} versendet!\nEvil Score: ${evilScore.value}\nDaten: ${JSON.stringify(displayData, null, 2)}`);
-  router.push('/');
+  const applicationInput: CreateApplicationInput = {
+    job_id: job.value.job_id,
+    first_name: adminData.value.first_name,
+    last_name: adminData.value.last_name,
+    email: adminData.value.email,
+    salary: parseFloat(adminData.value.salary),
+    availability: convertDateToISO(adminData.value.availability),
+    evil_score: evilScore.value,
+    expertise: finalExpertise.value || '',
+    risk: selectedAttributes.value.risk || '',
+    approach: selectedAttributes.value.approach || '',
+    hierarchy: selectedAttributes.value.hierarchy || '',
+    cv_file: adminData.value.cv || null
+  };
+
+  const result = await createApplication(applicationInput);
+
+  submitting.value = false;
+
+  if (result.success) {
+    router.push('/assessment/success');
+  } else {
+    errors.value.submit = result.error || 'Ein Fehler ist aufgetreten.';
+    console.error('Submission error:', result.error);
+  }
 };
 </script>
+
 
 <template>
   <div class="min-h-screen py-12 px-4 flex items-center justify-center">

@@ -64,6 +64,22 @@ export const useApplications = () => {
         loading.value = false;
     };
 
+    // Einzelne Bewerbung nach ID laden
+    const getApplicationById = async (id: number): Promise<Application | null> => {
+        const { data, error: fetchError } = await supabase
+            .from('applications')
+            .select('*')
+            .eq('application_id', id)
+            .single();
+
+        if (fetchError) {
+            console.error('Fehler beim Laden der Bewerbung:', fetchError);
+            return null;
+        }
+
+        return data as Application;
+    };
+
     // Neue Bewerbung erstellen
     const createApplication = async (input: CreateApplicationInput): Promise<{ success: boolean; error?: string }> => {
         let cvUrl: string | null = null;
@@ -137,6 +153,78 @@ export const useApplications = () => {
         return true;
     };
 
+    // Bulk-Status für mehrere Bewerbungen aktualisieren
+    const updateBulkStatus = async (ids: number[], newStatus: ApplicationStatus): Promise<boolean> => {
+        const { error: updateError } = await supabase
+            .from('applications')
+            .update({ status: newStatus } as any)
+            .in('application_id', ids);
+
+        if (updateError) {
+            console.error('Fehler beim Bulk-Update:', updateError);
+            return false;
+        }
+
+        // Lokalen State aktualisieren
+        applications.value.forEach(app => {
+            if (ids.includes(app.application_id)) {
+                app.status = newStatus;
+            }
+        });
+        return true;
+    };
+
+    // Bewerbungen löschen (DB + Storage)
+    const deleteApplications = async (ids: number[]): Promise<{ success: boolean; error?: string }> => {
+        // 1. Bewerbungen laden um CV-URLs zu bekommen
+        const { data: appsToDelete, error: fetchError } = await supabase
+            .from('applications')
+            .select('application_id, cv')
+            .in('application_id', ids);
+
+        if (fetchError) {
+            return { success: false, error: 'Fehler beim Laden: ' + fetchError.message };
+        }
+
+        // 2. CV-Dateien aus Storage löschen
+        const cvFiles = (appsToDelete as { application_id: number; cv: string | null }[])
+            .filter(app => app.cv)
+            .map(app => {
+                // Extrahiere Dateinamen aus der URL
+                const url = app.cv!;
+                const parts = url.split('/');
+                return parts[parts.length - 1];
+            });
+
+        if (cvFiles.length > 0) {
+            const { error: storageError } = await supabase.storage
+                .from('cv-uploads')
+                .remove(cvFiles);
+
+            if (storageError) {
+                console.error('Warnung: CV-Dateien konnten nicht gelöscht werden:', storageError);
+                // Wir machen trotzdem weiter mit dem DB-Löschen
+            }
+        }
+
+        // 3. Bewerbungen aus DB löschen
+        const { error: deleteError } = await supabase
+            .from('applications')
+            .delete()
+            .in('application_id', ids);
+
+        if (deleteError) {
+            return { success: false, error: 'Fehler beim Löschen: ' + deleteError.message };
+        }
+
+        // 4. Lokalen State aktualisieren
+        applications.value = applications.value.filter(
+            app => !ids.includes(app.application_id)
+        );
+
+        return { success: true };
+    };
+
     // --- KPIs ---
     const totalApplications = computed(() => applications.value.length);
 
@@ -155,10 +243,14 @@ export const useApplications = () => {
         loading,
         error,
         fetchApplications,
+        getApplicationById,
         createApplication,
         updateStatus,
+        updateBulkStatus,
+        deleteApplications,
         totalApplications,
         openApplications,
         averageEvilScore
     };
 };
+

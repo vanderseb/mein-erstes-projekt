@@ -82,7 +82,7 @@ export const useEvilState = () => {
 
         // Wenn nur noch eine Expertise übrig ist, ist Phase 2 beendet
         if (remainingExpertises.value.length === 1) {
-            finalExpertise.value = remainingExpertises.value[0];
+            finalExpertise.value = remainingExpertises.value[0]!;
         }
 
         // Setze die nächste Frage-ID (wenn vorhanden)
@@ -130,14 +130,14 @@ export const useEvilState = () => {
         }
 
         if (jobs.length === 1) {
-            return jobs[0];
+            return jobs[0]!;
         }
 
         return jobs.reduce((best, job) => {
             const currentMatches = calculateJobMatches(job);
             const bestMatches = calculateJobMatches(best);
             return currentMatches > bestMatches ? job : best;
-        }, jobs[0]);
+        }, jobs[0]!);
     };
 
     // Finde heraus, welche Attribute sich bei den verbleibenden Jobs unterscheiden

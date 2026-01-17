@@ -1,9 +1,44 @@
 <script setup lang="ts">
+import type { Department } from '@/composables/useJobs';
+
 // Karriere-Übersicht
 const { jobs, loading, error, DEPARTMENT_LABELS, fetchJobs } = useJobs();
+const route = useRoute();
 
 // Jobs laden beim Seitenaufruf
 await fetchJobs();
+
+// Filter State - prüfe auf Query-Parameter
+const getInitialDepartment = (): Department | 'all' => {
+    const dept = route.query.department as string;
+    if (dept && Object.keys(DEPARTMENT_LABELS).includes(dept)) {
+        return dept as Department;
+    }
+    return 'all';
+};
+
+const selectedDepartment = ref<Department | 'all'>(getInitialDepartment());
+
+// Auto-Scroll zu Positionen wenn Filter aktiv
+onMounted(() => {
+    if (route.query.department) {
+        // Kurz warten bis die Seite gerendert ist
+        setTimeout(() => {
+            document.getElementById('positionen')?.scrollIntoView({ behavior: 'smooth' });
+        }, 300);
+    }
+});
+
+// Gefilterte Jobs
+const filteredJobs = computed(() => {
+    if (selectedDepartment.value === 'all') {
+        return jobs.value;
+    }
+    return jobs.value.filter(job => job.department === selectedDepartment.value);
+});
+
+// Alle Departments für Filter-Buttons
+const departments = Object.entries(DEPARTMENT_LABELS) as [Department, string][];
 </script>
 
 <template>
@@ -32,18 +67,57 @@ await fetchJobs();
     </section>
 
     <!-- Jobs Grid -->
-    <section class="py-12 md:py-16 px-4">
+    <section id="positionen" class="py-12 md:py-16 px-4">
       <div class="max-w-6xl mx-auto">
         
-        <div class="text-center mb-12">
+        <div class="text-center mb-8">
           <h2 class="text-white mb-4">Offene Positionen</h2>
           <div class="w-16 h-1 bg-evil-red mx-auto"></div>
         </div>
 
+        <!-- Department Filter -->
+        <div class="mb-8">
+          <div class="flex flex-wrap justify-center gap-2">
+            <!-- Alle Button -->
+            <button
+              @click="selectedDepartment = 'all'"
+              :class="[
+                'px-4 py-2 text-sm font-bold rounded-evil-md transition-all',
+                selectedDepartment === 'all'
+                  ? 'bg-evil-red text-white'
+                  : 'bg-evil-dark border border-evil-light/20 text-evil-mid hover:text-evil-light hover:border-evil-light/40'
+              ]"
+            >
+              Alle
+            </button>
+            
+            <!-- Department Buttons -->
+            <button
+              v-for="[key, label] in departments"
+              :key="key"
+              @click="selectedDepartment = key"
+              :class="[
+                'px-4 py-2 text-sm font-bold rounded-evil-md transition-all',
+                selectedDepartment === key
+                  ? 'bg-evil-red text-white'
+                  : 'bg-evil-dark border border-evil-light/20 text-evil-mid hover:text-evil-light hover:border-evil-light/40'
+              ]"
+            >
+              {{ label }}
+            </button>
+          </div>
+          
+          <!-- Ergebnis-Anzahl -->
+          <p class="text-center text-evil-mid text-sm mt-4">
+            {{ filteredJobs.length }} {{ filteredJobs.length === 1 ? 'Position' : 'Positionen' }} gefunden
+          </p>
+        </div>
+
+        <!-- Jobs Grid -->
         <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           
           <ContentCard 
-            v-for="job in jobs" 
+            v-for="job in filteredJobs" 
             :key="job.job_id" 
             class="flex flex-col hover:border-evil-light/40 transition-colors"
           >
@@ -68,6 +142,11 @@ await fetchJobs();
             </BaseButton>
           </ContentCard>
 
+        </div>
+
+        <!-- Empty State -->
+        <div v-if="filteredJobs.length === 0" class="text-center py-12">
+          <p class="text-evil-mid">Keine offenen Positionen in diesem Bereich.</p>
         </div>
 
       </div>

@@ -5,6 +5,7 @@ export type ApplicationStatus = 'open' | 'in_progress' | 'accepted' | 'rejected'
 export interface Application {
     application_id: number;
     job_id: number;
+    user_id: string; // Verknuepfung zu auth.users
     created_at: string;
     salary: number;
     availability: string;
@@ -41,7 +42,7 @@ export const useApplications = () => {
 
     // Reaktive States
     const applications = ref<Application[]>([]);
-    const loading = ref(true);
+    const loading = ref(false);
     const error = ref<string | null>(null);
 
     // Alle Bewerbungen laden
@@ -80,57 +81,58 @@ export const useApplications = () => {
         return data as Application;
     };
 
-    // Neue Bewerbung erstellen
+    // Neue Bewerbung erstellen (via Server-API mit User-Erstellung + Magic Link)
     const createApplication = async (input: CreateApplicationInput): Promise<{ success: boolean; error?: string }> => {
-        let cvUrl: string | null = null;
+        // CV als Base64 konvertieren falls vorhanden
+        let cvBase64: string | null = null;
+        let cvFileName: string | null = null;
 
-        // 1. CV hochladen falls vorhanden
         if (input.cv_file) {
-            const fileExt = input.cv_file.name.split('.').pop();
-            const fileName = `${Date.now()}_${input.first_name}_${input.last_name}.${fileExt}`;
+            cvFileName = `${Date.now()}_${input.first_name}_${input.last_name}.${input.cv_file.name.split('.').pop()}`;
 
-            const { error: uploadError } = await supabase.storage
-                .from('cv-uploads')
-                .upload(fileName, input.cv_file);
-
-            if (uploadError) {
-                console.error('Fehler beim CV-Upload:', uploadError);
-                return { success: false, error: 'CV-Upload fehlgeschlagen: ' + uploadError.message };
-            }
-
-            // Public URL generieren
-            const { data: urlData } = supabase.storage
-                .from('cv-uploads')
-                .getPublicUrl(fileName);
-
-            cvUrl = urlData.publicUrl;
+            // File zu Base64 konvertieren (mit FileReader für große Dateien)
+            cvBase64 = await new Promise<string>((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => {
+                    const result = reader.result as string;
+                    // Data URL Format: "data:application/pdf;base64,..." - nur Base64-Teil extrahieren
+                    const base64 = result.split(',')[1] ?? '';
+                    resolve(base64);
+                };
+                reader.onerror = () => reject(new Error('Datei konnte nicht gelesen werden'));
+                reader.readAsDataURL(input.cv_file!);
+            });
         }
 
-        // 2. Bewerbung in Datenbank speichern
-        const { error: insertError } = await supabase
-            .from('applications')
-            .insert({
-                job_id: input.job_id,
-                first_name: input.first_name,
-                last_name: input.last_name,
-                email: input.email,
-                salary: input.salary,
-                availability: input.availability,
-                evil_score: input.evil_score,
-                expertise: input.expertise,
-                risk: input.risk,
-                approach: input.approach,
-                hierarchy: input.hierarchy,
-                cv: cvUrl,
-                status: 'open'
-            } as any); // Type assertion wegen fehlender Supabase-Typen
+        // Server-API aufrufen (CV-Upload + User + Bewerbung + Magic Link)
+        try {
+            await $fetch('/api/applications', {
+                method: 'POST',
+                body: {
+                    job_id: input.job_id,
+                    first_name: input.first_name,
+                    last_name: input.last_name,
+                    email: input.email,
+                    salary: input.salary,
+                    availability: input.availability,
+                    evil_score: input.evil_score,
+                    expertise: input.expertise,
+                    risk: input.risk,
+                    approach: input.approach,
+                    hierarchy: input.hierarchy,
+                    cv_base64: cvBase64,
+                    cv_filename: cvFileName
+                }
+            });
 
-        if (insertError) {
-            console.error('Fehler beim Speichern der Bewerbung:', insertError);
-            return { success: false, error: 'Speichern fehlgeschlagen: ' + insertError.message };
+            return { success: true };
+        } catch (err: any) {
+            console.error('Fehler beim Speichern der Bewerbung:', err);
+            return {
+                success: false,
+                error: err.data?.message || 'Speichern fehlgeschlagen'
+            };
         }
-
-        return { success: true };
     };
 
     // Status einer Bewerbung aktualisieren

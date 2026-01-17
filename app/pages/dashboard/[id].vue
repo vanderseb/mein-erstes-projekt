@@ -1,6 +1,12 @@
 <script setup lang="ts">
 import { useApplications, type Application, type ApplicationStatus } from '@/composables/useApplications';
 import { useJobs, type Job, DEPARTMENT_LABELS, type Department } from '@/composables/useJobs';
+import { getStatusLabel, getStatusColor, formatDate } from '@/composables/useApplicationUtils';
+
+// Middleware fuer HR-Zugriffskontrolle
+definePageMeta({
+    middleware: 'auth'
+});
 
 const route = useRoute();
 const router = useRouter();
@@ -39,28 +45,6 @@ const loadData = async () => {
 };
 
 await loadData();
-
-// Helpers
-const getStatusLabel = (status: ApplicationStatus) => {
-    switch (status) {
-        case 'open': return 'Offen';
-        case 'in_progress': return 'In Bearbeitung';
-        case 'accepted': return 'Angenommen';
-        case 'rejected': return 'Abgelehnt';
-        default: return status;
-    }
-};
-
-const getStatusColor = (status: ApplicationStatus) => {
-    switch (status) {
-        case 'accepted': return 'text-green-400';
-        default: return 'text-evil-light';
-    }
-};
-
-const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('de-DE');
-};
 
 // Comparison data
 const comparisonFields = computed(() => {

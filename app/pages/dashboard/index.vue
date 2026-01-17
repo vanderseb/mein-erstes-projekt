@@ -1,6 +1,21 @@
 <script setup lang="ts">
 import { useApplications, type Application, type ApplicationStatus } from '@/composables/useApplications';
 import { useJobs, type Job } from '@/composables/useJobs';
+import { getStatusLabel, getStatusColor, formatDate } from '@/composables/useApplicationUtils';
+
+// Middleware fuer HR-Zugriffskontrolle
+definePageMeta({
+    middleware: 'auth'
+});
+
+const supabase = useSupabaseClient();
+const router = useRouter();
+
+// Logout
+const logout = async () => {
+    await supabase.auth.signOut();
+    router.push('/');
+};
 
 // Data
 const { 
@@ -97,27 +112,6 @@ const getMatchCount = (app: Application): number => {
     return matches;
 };
 
-const getStatusLabel = (status: ApplicationStatus) => {
-    switch (status) {
-        case 'open': return 'Offen';
-        case 'in_progress': return 'In Bearbeitung';
-        case 'accepted': return 'Angenommen';
-        case 'rejected': return 'Abgelehnt';
-        default: return status;
-    }
-};
-
-const getStatusColor = (status: ApplicationStatus) => {
-    switch (status) {
-        case 'accepted': return 'text-green-400';
-        default: return 'text-evil-light';
-    }
-};
-
-const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('de-DE');
-};
-
 // Selection handlers
 const toggleAll = () => {
     if (allSelected.value) {
@@ -157,9 +151,17 @@ const handleBulkDelete = async () => {
   <div>
     <!-- Header Section -->
     <section class="py-12 md:py-16 px-4 border-b border-evil-light/10">
-      <div class="max-w-6xl mx-auto">
-        <h1 class="text-white text-3xl md:text-4xl font-bold mb-2">HR Dashboard</h1>
-        <p class="text-evil-light/70">Bewerbungsmanagement für Dr. Evil & Söhne</p>
+      <div class="max-w-6xl mx-auto flex justify-between items-center">
+        <div>
+          <h1 class="text-white text-3xl md:text-4xl font-bold mb-2">HR Dashboard</h1>
+          <p class="text-evil-light/70">Bewerbungsmanagement für Dr. Evil & Söhne</p>
+        </div>
+        <button 
+          @click="logout"
+          class="px-4 py-2 text-sm text-evil-mid hover:text-evil-light border border-evil-light/20 rounded-evil-md hover:border-evil-light/40 transition-colors"
+        >
+          Abmelden
+        </button>
       </div>
     </section>
 

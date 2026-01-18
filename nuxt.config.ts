@@ -6,8 +6,27 @@ export default defineNuxtConfig({
 
   // Supabase-Konfiguration
   supabase: {
-    redirect: false, // Kein automatischer Redirect bei fehlender Auth
-    types: '' // Deaktiviert die Erwartung einer database.types.ts Datei
+    redirect: false,
+    types: false // Deaktiviert - wir importieren Types manuell in Server-APIs
+  },
+
+  // Nitro Server-Konfiguration
+  nitro: {
+    rollupConfig: {
+      onwarn(warning, handler) {
+        // Supabase-interne unused imports ignorieren
+        if (warning.code === 'UNUSED_EXTERNAL_IMPORT' && 
+            warning.exporter?.includes('@supabase')) {
+          return
+        }
+        // Circular dependencies in nitropack/@nuxt ignorieren
+        if (warning.code === 'CIRCULAR_DEPENDENCY' && 
+            (warning.message?.includes('nitropack') || warning.message?.includes('@nuxt'))) {
+          return
+        }
+        handler(warning)
+      }
+    }
   },
 
   // Globale CSS-Datei einbinden

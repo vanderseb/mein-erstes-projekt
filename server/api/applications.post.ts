@@ -1,10 +1,15 @@
 // server/api/applications.post.ts
-// Erstellt Bewerbung, User (falls nötig) und sendet Magic Link
+// Erstellt Bewerbung, User (falls nötig) und sendet Magic Link via Resend
 
-import { serverSupabaseServiceRole, serverSupabaseClient } from '#supabase/server';
+import { serverSupabaseServiceRole } from '#supabase/server';
+import type { Database } from '../../types/supabase';
+import { sendEmail } from '../utils/sendEmail';
+import { applicationSubmittedTemplate } from '../utils/emailTemplates';
+import { extractTokenFromLink, buildCustomMagicLink } from '../utils/magicLink';
 
 interface ApplicationBody {
     job_id: number;
+    job_title: string;
     first_name: string;
     last_name: string;
     email: string;
@@ -30,9 +35,8 @@ export default defineEventHandler(async (event) => {
         });
     }
 
-    // Supabase Clients
-    const supabaseAdmin = serverSupabaseServiceRole(event);
-    const supabaseClient = await serverSupabaseClient(event);
+    // Supabase Admin Client
+    const supabaseAdmin = serverSupabaseServiceRole<Database>(event);
 
     // 1. User suchen oder erstellen
     let userId: string;
@@ -131,26 +135,60 @@ export default defineEventHandler(async (event) => {
         });
     }
 
-    // 4. Magic Link senden (signInWithOtp versendet die E-Mail automatisch)
+    // 4. Magic Link generieren und E-Mail via Resend senden
     const requestUrl = getRequestURL(event);
-    const redirectUrl = `${requestUrl.protocol}//${requestUrl.host}/account/confirm?next=/account`;
+    const baseUrl = `${requestUrl.protocol}//${requestUrl.host}`;
 
-    const { error: otpError } = await supabaseClient.auth.signInWithOtp({
-        email: body.email,
-        options: {
-            emailRedirectTo: redirectUrl
+    let emailSent = false;
+
+    try {
+        // Magic Link von Supabase generieren lassen
+        const { data: linkData, error: linkError } = await supabaseAdmin.auth.admin.generateLink({
+            type: 'magiclink',
+            email: body.email
+        });
+
+        if (linkError || !linkData?.properties?.action_link) {
+            console.error('Magic-Link Generierung fehlgeschlagen:', linkError);
+        } else {
+            // Token aus dem Supabase-Link extrahieren und eigenen Link bauen
+            const token = extractTokenFromLink(linkData.properties.action_link);
+
+            if (!token) {
+                console.error('Token konnte nicht aus Link extrahiert werden');
+            } else {
+                const customMagicLink = buildCustomMagicLink(baseUrl, token, '/account');
+
+                // E-Mail mit eigenem Template senden
+                const html = applicationSubmittedTemplate({
+                    firstName: body.first_name,
+                    jobTitle: body.job_title,
+                    magicLink: customMagicLink
+                });
+
+                const emailResult = await sendEmail({
+                    to: body.email,
+                    subject: 'Akte angelegt – Dr. Evil & Söhne',
+                    html
+                });
+
+                emailSent = emailResult.success;
+
+                if (!emailResult.success) {
+                    console.error('E-Mail-Versand fehlgeschlagen:', emailResult.error);
+                }
+            }
         }
-    });
-
-    if (otpError) {
-        console.error('Magic Link Fehler:', otpError);
-        // Bewerbung wurde gespeichert, nur E-Mail fehlgeschlagen
-        // Wir geben trotzdem Erfolg zurück, loggen aber den Fehler
+    } catch (err: any) {
+        console.error('Fehler bei Magic Link / E-Mail:', err);
     }
 
     return {
         success: true,
         userId,
-        message: 'Bewerbung erfolgreich gespeichert. Magic Link wurde gesendet.'
+        emailSent,
+        message: emailSent
+            ? 'Bewerbung erfolgreich gespeichert. Bestätigung wurde gesendet.'
+            : 'Bewerbung gespeichert, aber E-Mail konnte nicht gesendet werden.'
     };
 });

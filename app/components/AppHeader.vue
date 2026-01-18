@@ -35,6 +35,14 @@ const mobileMenuOpen = ref(false)
             {{ item.label }}
           </NuxtLink>
         </li>
+        <li>
+          <NuxtLink 
+            to="/login"
+            class="font-body bg-evil-red text-white px-4 py-2 rounded-evil-md hover:bg-red-700 transition-colors duration-200 text-sm uppercase tracking-wider"
+          >
+            Login
+          </NuxtLink>
+        </li>
       </ul>
       
       <!-- Mobile Menu Button -->
@@ -67,6 +75,15 @@ const mobileMenuOpen = ref(false)
             active-class="text-white"
           >
             {{ item.label }}
+          </NuxtLink>
+        </li>
+        <li class="pt-2">
+          <NuxtLink 
+            to="/login"
+            @click="mobileMenuOpen = false"
+            class="inline-block font-body bg-evil-red text-white px-4 py-2 rounded-evil-md hover:bg-red-700 transition-colors duration-200 text-sm uppercase tracking-wider"
+          >
+            Login
           </NuxtLink>
         </li>
       </ul>

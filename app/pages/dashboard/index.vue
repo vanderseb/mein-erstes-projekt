@@ -3,11 +3,6 @@ import { useApplications, type Application, type ApplicationStatus } from '@/com
 import { useJobs, type Job } from '@/composables/useJobs';
 import { getStatusLabel, getStatusColor, formatDate } from '@/composables/useApplicationUtils';
 
-// Middleware fuer HR-Zugriffskontrolle
-definePageMeta({
-    middleware: 'auth'
-});
-
 const supabase = useSupabaseClient();
 const router = useRouter();
 
@@ -242,9 +237,9 @@ const handleBulkDelete = async () => {
           <!-- Delete Confirmation Modal -->
           <div 
             v-if="showDeleteConfirm" 
-            class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4"
+            class="fixed inset-0 flex items-center justify-center z-50 p-4"
           >
-            <div class="bg-evil-darker border border-evil-light/20 rounded-evil-lg p-6 max-w-md w-full">
+            <div class="bg-evil-dark border border-evil-light/30 rounded-evil-lg p-6 max-w-md w-full shadow-2xl shadow-black/50">
               <h3 class="text-white text-lg font-bold mb-4">Löschen bestätigen</h3>
               <p class="text-evil-light/70 mb-6">
                 Möchtest du wirklich {{ selectedIds.length }} Bewerbung(en) unwiderruflich löschen?

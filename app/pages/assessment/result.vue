@@ -1,11 +1,7 @@
 <script setup lang="ts">
 const { jobs, getJobsByExpertise } = useJobs();
-const { 
-    evilScore, 
-    finalExpertise, 
-    findBestJob, 
-    calculateJobMatches 
-} = useEvilState();
+const { evilScore, finalExpertise, selectedAttributes } = useQuizState();
+const { findBestJob, calculateJobMatches } = useJobMatching();
 
 // Jobs die zur ermittelten Expertise passen
 const matchingJobs = computed(() => {
@@ -16,7 +12,7 @@ const matchingJobs = computed(() => {
 // Der beste Job basierend auf dem Matching-Algorithmus
 const winner = computed(() => {
     if (matchingJobs.value.length === 0) return jobs.value[0]; // Fallback
-    return findBestJob(matchingJobs.value);
+    return findBestJob(matchingJobs.value, selectedAttributes.value);
 });
 
 // Rangliste aller passenden Jobs mit Übereinstimmungen
@@ -24,7 +20,7 @@ const rankedJobs = computed(() => {
     return matchingJobs.value
         .map(job => ({
             ...job,
-            matches: calculateJobMatches(job)
+            matches: calculateJobMatches(job, selectedAttributes.value)
         }))
         .sort((a, b) => b.matches - a.matches);
 });

@@ -24,6 +24,7 @@ export interface Application {
 // Input-Typ für neue Bewerbungen (ohne auto-generierte Felder)
 export interface CreateApplicationInput {
     job_id: number;
+    job_title: string; // Für E-Mail-Benachrichtigungen
     first_name: string;
     last_name: string;
     email: string;
@@ -110,6 +111,7 @@ export const useApplications = () => {
                 method: 'POST',
                 body: {
                     job_id: input.job_id,
+                    job_title: input.job_title,
                     first_name: input.first_name,
                     last_name: input.last_name,
                     email: input.email,
@@ -135,96 +137,78 @@ export const useApplications = () => {
         }
     };
 
-    // Status einer Bewerbung aktualisieren
+    // Status einer Bewerbung aktualisieren (via Server-API mit E-Mail-Versand)
     const updateStatus = async (applicationId: number, newStatus: ApplicationStatus) => {
-        const { error: updateError } = await supabase
-            .from('applications')
-            .update({ status: newStatus } as any)
-            .eq('application_id', applicationId);
-
-        if (updateError) {
-            console.error('Fehler beim Aktualisieren:', updateError);
-            return false;
-        }
-
-        // Lokalen State aktualisieren
-        const app = applications.value.find(a => a.application_id === applicationId);
-        if (app) {
-            app.status = newStatus;
-        }
-        return true;
-    };
-
-    // Bulk-Status für mehrere Bewerbungen aktualisieren
-    const updateBulkStatus = async (ids: number[], newStatus: ApplicationStatus): Promise<boolean> => {
-        const { error: updateError } = await supabase
-            .from('applications')
-            .update({ status: newStatus } as any)
-            .in('application_id', ids);
-
-        if (updateError) {
-            console.error('Fehler beim Bulk-Update:', updateError);
-            return false;
-        }
-
-        // Lokalen State aktualisieren
-        applications.value.forEach(app => {
-            if (ids.includes(app.application_id)) {
-                app.status = newStatus;
-            }
-        });
-        return true;
-    };
-
-    // Bewerbungen löschen (DB + Storage)
-    const deleteApplications = async (ids: number[]): Promise<{ success: boolean; error?: string }> => {
-        // 1. Bewerbungen laden um CV-URLs zu bekommen
-        const { data: appsToDelete, error: fetchError } = await supabase
-            .from('applications')
-            .select('application_id, cv')
-            .in('application_id', ids);
-
-        if (fetchError) {
-            return { success: false, error: 'Fehler beim Laden: ' + fetchError.message };
-        }
-
-        // 2. CV-Dateien aus Storage löschen
-        const cvFiles = (appsToDelete as { application_id: number; cv: string | null }[])
-            .filter(app => app.cv)
-            .map(app => {
-                // Extrahiere Dateinamen aus der URL
-                const url = app.cv!;
-                const parts = url.split('/');
-                return parts[parts.length - 1];
+        try {
+            await $fetch('/api/applications-status', {
+                method: 'POST',
+                body: { applicationId, newStatus }
             });
 
-        if (cvFiles.length > 0) {
-            const { error: storageError } = await supabase.storage
-                .from('cv-uploads')
-                .remove(cvFiles);
-
-            if (storageError) {
-                console.error('Warnung: CV-Dateien konnten nicht gelöscht werden:', storageError);
-                // Wir machen trotzdem weiter mit dem DB-Löschen
+            // Lokalen State aktualisieren
+            const app = applications.value.find(a => a.application_id === applicationId);
+            if (app) {
+                app.status = newStatus;
             }
+            return true;
+        } catch (err: any) {
+            console.error('Fehler beim Aktualisieren:', err);
+            return false;
         }
+    };
 
-        // 3. Bewerbungen aus DB löschen
-        const { error: deleteError } = await supabase
-            .from('applications')
-            .delete()
-            .in('application_id', ids);
+    // Bulk-Status für mehrere Bewerbungen aktualisieren (via Server-API mit E-Mail-Versand)
+    const updateBulkStatus = async (ids: number[], newStatus: ApplicationStatus): Promise<boolean> => {
+        try {
+            // Jede Bewerbung einzeln aktualisieren (für individuelle E-Mails)
+            const results = await Promise.all(
+                ids.map(id =>
+                    $fetch('/api/applications-status', {
+                        method: 'POST',
+                        body: { applicationId: id, newStatus }
+                    }).catch(err => {
+                        console.error(`Fehler bei ID ${id}:`, err);
+                        return null;
+                    })
+                )
+            );
 
-        if (deleteError) {
-            return { success: false, error: 'Fehler beim Löschen: ' + deleteError.message };
+            // Lokalen State aktualisieren
+            applications.value.forEach(app => {
+                if (ids.includes(app.application_id)) {
+                    app.status = newStatus;
+                }
+            });
+
+            // Prüfe ob alle erfolgreich waren
+            return results.every(r => r !== null);
+        } catch (err: any) {
+            console.error('Fehler beim Bulk-Update:', err);
+            return false;
         }
+    };
 
-        // 4. Lokalen State aktualisieren
-        applications.value = applications.value.filter(
-            app => !ids.includes(app.application_id)
-        );
+    // Bewerbungen löschen (via Server-API mit E-Mail-Versand)
+    const deleteApplications = async (ids: number[]): Promise<{ success: boolean; error?: string }> => {
+        try {
+            await $fetch('/api/applications-delete', {
+                method: 'POST',
+                body: { applicationIds: ids }
+            });
 
-        return { success: true };
+            // Lokalen State aktualisieren
+            applications.value = applications.value.filter(
+                app => !ids.includes(app.application_id)
+            );
+
+            return { success: true };
+        } catch (err: any) {
+            console.error('Fehler beim Löschen:', err);
+            return {
+                success: false,
+                error: err.data?.message || 'Löschen fehlgeschlagen'
+            };
+        }
     };
 
     // --- KPIs ---

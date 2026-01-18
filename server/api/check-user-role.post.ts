@@ -2,13 +2,14 @@
 // Prüft die Rolle eines Users anhand der E-Mail-Adresse
 
 import { serverSupabaseServiceRole } from '#supabase/server';
+import type { Database } from '../../types/supabase';
 
 interface RequestBody {
     email: string;
 }
 
 interface ResponseBody {
-    role: 'hr' | 'applicant' | 'unknown';
+    role: 'admin' | 'applicant' | 'unknown';
 }
 
 export default defineEventHandler(async (event): Promise<ResponseBody> => {
@@ -21,7 +22,7 @@ export default defineEventHandler(async (event): Promise<ResponseBody> => {
         });
     }
 
-    const supabaseAdmin = serverSupabaseServiceRole(event);
+    const supabaseAdmin = serverSupabaseServiceRole<Database>(event);
 
     // Alle User laden und nach E-Mail suchen
     const { data: usersData, error: listError } = await supabaseAdmin.auth.admin.listUsers();
@@ -44,8 +45,8 @@ export default defineEventHandler(async (event): Promise<ResponseBody> => {
     // Rolle aus app_metadata lesen
     const role = user.app_metadata?.role;
 
-    if (role === 'hr') {
-        return { role: 'hr' };
+    if (role === 'admin') {
+        return { role: 'admin' };
     }
 
     // Wenn keine Rolle oder 'applicant', dann Bewerber

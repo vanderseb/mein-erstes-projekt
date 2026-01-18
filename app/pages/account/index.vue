@@ -3,11 +3,6 @@ import { useApplications, type Application } from '@/composables/useApplications
 import { useJobs, type Job } from '@/composables/useJobs';
 import { statusConfig, formatDate } from '@/composables/useApplicationUtils';
 
-// Middleware fuer Zugriffskontrolle
-definePageMeta({
-    middleware: 'auth'
-});
-
 const supabase = useSupabaseClient();
 const router = useRouter();
 

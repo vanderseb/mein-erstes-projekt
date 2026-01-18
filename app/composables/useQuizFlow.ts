@@ -3,7 +3,10 @@ import type { Job } from './useJobs';
 import type {
     PersonalityQuestion,
     ExpertiseQuestion,
-    DiscriminatorQuestion
+    DiscriminatorQuestion,
+    PersonalityAnswer,
+    ExpertiseAnswer,
+    DiscriminatorAnswer
 } from './useQuestions';
 
 export interface QuizFlowOptions {
@@ -12,6 +15,7 @@ export interface QuizFlowOptions {
 }
 
 export type CurrentQuestion = PersonalityQuestion | ExpertiseQuestion | DiscriminatorQuestion | null;
+export type QuizAnswer = PersonalityAnswer | ExpertiseAnswer | DiscriminatorAnswer;
 
 export const useQuizFlow = (options: QuizFlowOptions) => {
     const { getJobsByExpertise } = useJobs();
@@ -34,10 +38,11 @@ export const useQuizFlow = (options: QuizFlowOptions) => {
         processDiscriminatorAnswer,
         advanceToPhase2,
         advanceToPhase3,
-        findDifferentiatingAttributes,
         markPhase3QuestionAsked,
         isPhase3QuestionAsked
-    } = useEvilState();
+    } = useQuizState();
+
+    const { findDifferentiatingAttributes } = useJobMatching();
 
     // Reset beim Start (nur wenn autoReset nicht explizit false ist)
     if (options.autoReset !== false) {
@@ -119,9 +124,9 @@ export const useQuizFlow = (options: QuizFlowOptions) => {
     // ANSWER HANDLER
     // =============================================
 
-    const selectAnswer = (option: any) => {
+    const selectAnswer = (option: QuizAnswer) => {
         if (currentPhase.value === 1) {
-            processPersonalityAnswer(option);
+            processPersonalityAnswer(option as PersonalityAnswer);
 
             if (phase1QuestionIndex.value < personalityQuestions.length - 1) {
                 phase1QuestionIndex.value++;
@@ -131,7 +136,7 @@ export const useQuizFlow = (options: QuizFlowOptions) => {
             }
         }
         else if (currentPhase.value === 2) {
-            processExpertiseAnswer(option);
+            processExpertiseAnswer(option as ExpertiseAnswer);
 
             // Prüfe ob finale Expertise ermittelt wurde
             if (finalExpertise.value) {
@@ -147,7 +152,7 @@ export const useQuizFlow = (options: QuizFlowOptions) => {
             }
         }
         else if (currentPhase.value === 3) {
-            processDiscriminatorAnswer(option);
+            processDiscriminatorAnswer(option as DiscriminatorAnswer);
 
             if (currentDiscriminatorQuestion.value) {
                 markPhase3QuestionAsked(currentDiscriminatorQuestion.value.id);

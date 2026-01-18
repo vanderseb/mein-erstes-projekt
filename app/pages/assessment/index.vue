@@ -6,7 +6,7 @@ const route = useRoute();
 const router = useRouter();
 const { getJobById } = useJobs();
 const { adminFields } = useQuestions();
-const { evilScore, finalExpertise, selectedAttributes } = useEvilState();
+const { evilScore, finalExpertise, selectedAttributes } = useQuizState();
 const { createApplication } = useApplications();
 
 // --- STATE ---
@@ -129,6 +129,7 @@ const submitApplication = async () => {
 
   const applicationInput: CreateApplicationInput = {
     job_id: job.value.job_id,
+    job_title: job.value.title,
     first_name: adminData.value.first_name,
     last_name: adminData.value.last_name,
     email: adminData.value.email,
@@ -147,7 +148,7 @@ const submitApplication = async () => {
   submitting.value = false;
 
   if (result.success) {
-    router.push('/assessment/success');
+    router.push(`/assessment/success?email=${encodeURIComponent(adminData.value.email)}`);
   } else {
     errors.value.submit = result.error || 'Ein Fehler ist aufgetreten.';
     console.error('Submission error:', result.error);

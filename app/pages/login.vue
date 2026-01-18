@@ -12,6 +12,10 @@ const password = ref('');
 const loading = ref(false);
 const error = ref<string | null>(null);
 
+// E-Mail Validierung
+const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+const emailErrorMessage = 'Bitte gib eine gültige E-Mail-Adresse ein (z.B. name@beispiel.de).';
+
 // Check for error from middleware redirect
 onMounted(() => {
     if (route.query.error === 'unauthorized') {
@@ -26,16 +30,22 @@ const checkEmail = async () => {
         return;
     }
 
+    // E-Mail-Format validieren
+    if (!emailPattern.test(email.value)) {
+        error.value = emailErrorMessage;
+        return;
+    }
+
     loading.value = true;
     error.value = null;
 
     try {
-        const { role } = await $fetch<{ role: 'hr' | 'applicant' | 'unknown' }>('/api/check-user-role', {
+        const { role } = await $fetch<{ role: 'admin' | 'applicant' | 'unknown' }>('/api/check-user-role', {
             method: 'POST',
             body: { email: email.value }
         });
 
-        if (role === 'hr') {
+        if (role === 'admin') {
             step.value = 'password';
         } else if (role === 'applicant') {
             // Magic Link senden
@@ -50,21 +60,23 @@ const checkEmail = async () => {
     loading.value = false;
 };
 
-// Magic Link senden
+// Magic Link senden (über Server-Endpunkt mit Resend)
 const sendMagicLink = async () => {
-    const { error: authError } = await supabase.auth.signInWithOtp({
-        email: email.value,
-        options: {
-            emailRedirectTo: `${window.location.origin}/account/confirm?next=/account`
+    try {
+        const result = await $fetch<{ success: boolean; message: string }>('/api/request-magic-link', {
+            method: 'POST',
+            body: { email: email.value }
+        });
+
+        if (!result.success) {
+            error.value = 'Fehler beim Senden des Magic Links.';
+            return;
         }
-    });
 
-    if (authError) {
-        error.value = 'Fehler beim Senden des Magic Links: ' + authError.message;
-        return;
+        step.value = 'magic-link-sent';
+    } catch (err: any) {
+        error.value = 'Fehler beim Senden des Magic Links: ' + (err.message || 'Unbekannter Fehler');
     }
-
-    step.value = 'magic-link-sent';
 };
 
 // HR Login mit Passwort
@@ -99,9 +111,9 @@ const loginHr = async () => {
         // Prüfe HR-Rolle nochmal zur Sicherheit
         const role = data.user?.app_metadata?.role;
         
-        if (role !== 'hr') {
+        if (role !== 'admin') {
             await supabase.auth.signOut();
-            error.value = 'Dieser Account hat keine HR-Berechtigung.';
+            error.value = 'Dieser Account hat keine Admin-Berechtigung.';
             loading.value = false;
             return;
         }
@@ -141,14 +153,16 @@ const resetToEmail = () => {
 
         <!-- SCHRITT 1: E-Mail eingeben -->
         <template v-if="step === 'email'">
-          <form @submit.prevent="checkEmail" class="space-y-4">
+          <form @submit.prevent="checkEmail" class="space-y-4" novalidate>
             <div>
               <label class="block text-sm font-bold text-evil-light mb-2">
                 E-Mail Adresse
               </label>
               <input 
                 v-model="email"
-                type="email"
+                type="text"
+                inputmode="email"
+                autocomplete="email"
                 placeholder="Deine E-Mail-Adresse"
                 class="w-full bg-evil-dark border border-evil-light/20 text-evil-light p-3 rounded-evil-md focus:border-evil-red focus:outline-none transition-colors placeholder:text-evil-mid"
                 :disabled="loading"
@@ -238,30 +252,26 @@ const resetToEmail = () => {
           </div>
         </template>
 
-        <!-- SCHRITT 4: Unbekannte E-Mail - Hackversuch erkannt -->
+        <!-- SCHRITT 4: Unbekannte E-Mail -->
         <template v-else-if="step === 'unknown'">
           <div class="text-center space-y-6">
             <div>
-              <h2 class="text-evil-red text-lg font-bold mb-3">
-                ⚠️  ALERT  ⚠️<br/>
-                Hackversuch erkannt!
+              <h2 class="text-evil-mid text-lg font-bold mb-3">
+                Kein Zugang vorhanden
               </h2>
-              <p class="text-evil-light text-sm mb-2">
-                Wir sind beeindruckt.
-              </p>
               <p class="text-evil-mid text-sm">
-                <span class="text-evil-light font-bold">{{ email }}</span><br/>
-                ist uns zwar unbekannt, aber deine Dreistigkeit gefällt uns.
+                Für <span class="text-evil-light font-bold">{{ email }}</span><br/>
+                existiert kein Account.
               </p>
             </div>
 
             <div class="pt-4 border-t border-evil-light/10">
               <p class="text-evil-light text-sm mb-4">
-                Solche Talente brauchen wir bei<br/>
-                <span class="text-evil-red font-bold">IT & Global Hacking</span>
+                Du möchtest Teil unserer Organisation werden?<br/>
+                Dann bewirb dich jetzt!
               </p>
               
-              <BaseButton href="/karriere?department=it" class="w-full text-center">
+              <BaseButton href="/karriere" class="w-full text-center">
                 Offene Stellen ansehen
               </BaseButton>
             </div>

@@ -6,7 +6,7 @@
   <div>
     <!-- Hero Section -->
     <HeroSection 
-      image="/design/assets/images/02_contact.jpg"
+      image="/design/assets/images/02_contact.webp"
       title="Kontakt"
       subtitle="Haben Sie Fragen? Möchten Sie die Welt unterwerfen? Schreiben Sie uns."
       :full-height="true"

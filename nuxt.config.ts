@@ -15,13 +15,13 @@ export default defineNuxtConfig({
     rollupConfig: {
       onwarn(warning, handler) {
         // Supabase-interne unused imports ignorieren
-        if (warning.code === 'UNUSED_EXTERNAL_IMPORT' && 
-            warning.exporter?.includes('@supabase')) {
+        if (warning.code === 'UNUSED_EXTERNAL_IMPORT' &&
+          warning.exporter?.includes('@supabase')) {
           return
         }
         // Circular dependencies in nitropack/@nuxt ignorieren
-        if (warning.code === 'CIRCULAR_DEPENDENCY' && 
-            (warning.message?.includes('nitropack') || warning.message?.includes('@nuxt'))) {
+        if (warning.code === 'CIRCULAR_DEPENDENCY' &&
+          (warning.message?.includes('nitropack') || warning.message?.includes('@nuxt'))) {
           return
         }
         handler(warning)

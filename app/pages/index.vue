@@ -2,15 +2,15 @@
 // Homepage - Dr. Evil & Söhne GmbH
 
 const heroImages = [
-  '/design/assets/images/01_Homepage_about_ous.jpg',
-  '/design/assets/images/02_contact.jpg',
-  '/design/assets/images/03_karriere.png',
-  '/design/assets/images/ceo.jpg',
-  '/design/assets/images/facility.jpg',
-  '/design/assets/images/finance.jpg',
-  '/design/assets/images/hr.jpg',
-  '/design/assets/images/it.jpg',
-  '/design/assets/images/rd.jpg',
+  '/design/assets/images/01_Homepage_about_ous.webp',
+  '/design/assets/images/02_contact.webp',
+  '/design/assets/images/03_karriere.webp',
+  '/design/assets/images/ceo.webp',
+  '/design/assets/images/facility.webp',
+  '/design/assets/images/finance.webp',
+  '/design/assets/images/hr.webp',
+  '/design/assets/images/it.webp',
+  '/design/assets/images/rd.webp',
 ]
 </script>
 

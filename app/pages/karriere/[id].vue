@@ -16,7 +16,7 @@ onMounted(async () => {
 
 // Bild-Pfad basierend auf Department (hr, rd, it, finance, facility)
 const heroImage = computed(() => 
-    job.value ? `/design/assets/images/${job.value.department}.jpg` : ''
+    job.value ? `/design/assets/images/${job.value.department}.webp` : ''
 );
 
 // Department-Label für die Anzeige

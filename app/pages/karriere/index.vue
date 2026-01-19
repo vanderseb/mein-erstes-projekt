@@ -45,7 +45,7 @@ const departments = Object.entries(DEPARTMENT_LABELS) as [Department, string][];
   <div>
     <!-- Hero Section -->
     <HeroSection 
-      image="/design/assets/images/03_karriere.png"
+      image="/design/assets/images/03_karriere.webp"
       title="Karriere bei Dr. Evil & Söhne"
       subtitle="Werden Sie Teil eines Teams, das die Welt verändert. Buchstäblich."
       :full-height="true"

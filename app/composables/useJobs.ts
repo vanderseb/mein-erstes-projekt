@@ -1,6 +1,5 @@
 // composables/useJobs.ts
 
-// Type-Definitionen für das Tag-basierte Job-System
 export type Expertise = 'Digital' | 'Social_Engineering' | 'Heavy_Machinery' | 'Economy';
 export type Hierarchy = 'Mastermind' | 'Henchman' | 'Minion';
 export type Approach = 'Destructive' | 'Manipulative' | 'Greedy' | 'Obedient';
@@ -9,7 +8,6 @@ export type Risk = 'Lethal' | 'Toxic' | 'Safe_Desk';
 // Department-Typen (interner Schlüssel für Bilder)
 export type Department = 'hr' | 'rd' | 'it' | 'finance' | 'facility';
 
-// Mapping: Department-Schlüssel → Anzeige-Label
 export const DEPARTMENT_LABELS: Record<Department, string> = {
     hr: 'Human Capital & Cannon Fodder',
     rd: 'R&D (Research & Destruction)',
@@ -34,12 +32,10 @@ export interface Job {
 export const useJobs = () => {
     const supabase = useSupabaseClient();
 
-    // Reaktive States
     const jobs = ref<Job[]>([]);
     const loading = ref(true);
     const error = ref<string | null>(null);
 
-    // Alle Jobs laden
     const fetchJobs = async () => {
         loading.value = true;
         error.value = null;
@@ -59,7 +55,6 @@ export const useJobs = () => {
         loading.value = false;
     };
 
-    // Einzelnen Job nach ID laden
     const getJobById = async (id: string | number): Promise<Job | null> => {
         const numericId = typeof id === 'string' ? parseInt(id, 10) : id;
 
@@ -84,15 +79,12 @@ export const useJobs = () => {
         return data as Job;
     };
 
-    // Hilfsfunktion: Jobs nach Expertise filtern
     const getJobsByExpertise = (expertise: Expertise) =>
         jobs.value.filter(job => job.expertise === expertise);
 
-    // Hilfsfunktion: Department-Label holen
     const getDepartmentLabel = (department: Department): string =>
         DEPARTMENT_LABELS[department];
 
-    // Jobs beim ersten Aufruf laden
     if (import.meta.client) {
         fetchJobs();
     }

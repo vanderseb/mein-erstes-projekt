@@ -1,9 +1,7 @@
 <script setup lang="ts">
 // Auth Callback Handler - verarbeitet Magic Link Tokens
-// Diese Seite verifiziert den Token direkt mit verifyOtp
 
 definePageMeta({
-    // Keine Auth-Middleware hier
 });
 
 const supabase = useSupabaseClient();
@@ -29,7 +27,7 @@ onMounted(async () => {
     }
 
     try {
-        // Token direkt verifizieren (umgeht PKCE)
+        // Token direkt verifizieren
         const { data, error: verifyError } = await supabase.auth.verifyOtp({
             token_hash: token,
             type: 'magiclink'
@@ -43,8 +41,7 @@ onMounted(async () => {
         }
 
         if (data.session) {
-            // Erfolg! Session ist gesetzt
-            // Kurze Verzögerung damit die Session sicher persistiert ist
+            // Kurze Verzögerung damit die Session sicher gesetzt ist
             await new Promise(resolve => setTimeout(resolve, 300));
             window.location.href = next;
         } else {
@@ -72,7 +69,7 @@ onMounted(async () => {
           <p class="text-evil-mid">Authentifizierung wird verarbeitet...</p>
         </div>
 
-        <!-- Error (Fallback, normalerweise wird redirected) -->
+        <!-- Error -->
         <div v-else class="text-center space-y-6">
           <div>
             <h2 class="text-evil-red text-lg font-bold mb-2">Fehler</h2>

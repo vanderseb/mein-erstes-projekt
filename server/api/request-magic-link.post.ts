@@ -32,8 +32,6 @@ export default defineEventHandler(async (event) => {
         .single();
 
     if (fetchError || !application) {
-        // Wir verraten nicht, ob die E-Mail existiert (Sicherheit)
-        // Aber wir senden trotzdem eine "Erfolg"-Meldung
         return {
             success: true,
             message: 'Falls ein Konto existiert, wurde ein Link gesendet.'

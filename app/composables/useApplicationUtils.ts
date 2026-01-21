@@ -3,7 +3,6 @@
 
 import type { ApplicationStatus } from './useApplications';
 
-// Status-Konfiguration
 export const statusConfig: Record<ApplicationStatus, { label: string; color: string }> = {
     open: { label: 'Offen', color: 'bg-blue-500/20 text-blue-400 border-blue-500/50' },
     in_progress: { label: 'In Bearbeitung', color: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/50' },
@@ -11,17 +10,17 @@ export const statusConfig: Record<ApplicationStatus, { label: string; color: str
     rejected: { label: 'Abgelehnt', color: 'bg-red-500/20 text-red-400 border-red-500/50' }
 };
 
-// Status-Label für Anzeige
+// Status-Label
 export const getStatusLabel = (status: ApplicationStatus): string => {
     return statusConfig[status]?.label ?? status;
 };
 
-// Status-Farbe für Tabellen (einfach)
+// Status-Farbe
 export const getStatusColor = (status: ApplicationStatus): string => {
     return status === 'accepted' ? 'text-green-400' : 'text-evil-light';
 };
 
-// Datum formatieren (deutsches Format)
+// Datum formatieren
 export const formatDate = (dateString: string): string => {
     return new Date(dateString).toLocaleDateString('de-DE', {
         day: '2-digit',

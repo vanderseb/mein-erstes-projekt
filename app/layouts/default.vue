@@ -4,7 +4,7 @@
     <!-- Header -->
     <AppHeader />
 
-    <!-- Main Content -->
+    <!-- Content -->
     <main class="flex-grow">
       <slot /> 
     </main>

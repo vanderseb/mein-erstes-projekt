@@ -6,19 +6,16 @@ import { statusConfig, formatDate } from '@/composables/useApplicationUtils';
 const supabase = useSupabaseClient();
 const router = useRouter();
 
-// Data
 const { applications, error } = useApplications();
 const { jobs, fetchJobs } = useJobs();
 
-// Loading und User-Name
 const pageLoading = ref(true);
 const userName = ref<string>('');
 
-// Daten laden
 onMounted(async () => {
     await fetchJobs();
     
-    // User direkt von Supabase holen
+    // User aus Supabase holen
     const { data: { user: authUser } } = await supabase.auth.getUser();
     
     if (authUser?.id) {
@@ -28,19 +25,18 @@ onMounted(async () => {
     pageLoading.value = false;
 });
 
-// Bewerbungen für spezifischen User laden
+// Bewerbungen für bestimmten User laden
 const fetchMyApplicationsForUser = async (uid: string) => {
     const { data, error: fetchError } = await supabase
         .from('applications')
         .select('*')
         .eq('user_id', uid)
-        .order('created_at', { ascending: false });
+        .order('created_at', { ascending: false }) as { data: Application[] | null; error: any };
     
     if (fetchError) {
         console.error('Fetch error:', fetchError);
     } else {
         applications.value = data || [];
-        // Name aus erster Bewerbung holen
         if (data && data.length > 0) {
             const firstApp = data[0]!;
             userName.value = `${firstApp.first_name} ${firstApp.last_name}`;
@@ -48,12 +44,11 @@ const fetchMyApplicationsForUser = async (uid: string) => {
     }
 };
 
-// Job-Titel zu Bewerbung finden
+// Job-Titel zu Bewerbung holen
 const getJobForApplication = (app: Application): Job | undefined => {
     return jobs.value.find(j => j.job_id === app.job_id);
 };
 
-// Logout
 const logout = async () => {
     await supabase.auth.signOut();
     router.push('/');

@@ -7,18 +7,15 @@ const route = useRoute();
 const router = useRouter();
 const applicationId = parseInt(route.params.id as string);
 
-// Data
 const { getApplicationById, updateStatus, deleteApplications } = useApplications();
 const { getJobById } = useJobs();
 
-// State
 const application = ref<Application | null>(null);
 const job = ref<Job | null>(null);
 const loading = ref(true);
 const error = ref<string | null>(null);
 const showDeleteConfirm = ref(false);
 
-// Load data
 const loadData = async () => {
     loading.value = true;
     error.value = null;
@@ -291,7 +288,7 @@ const handleDelete = async () => {
 
         </div>
 
-        <!-- Delete Confirmation Modal -->
+        <!-- Delete Confirmation Popup -->
         <div 
           v-if="showDeleteConfirm" 
           class="fixed inset-0 flex items-center justify-center z-50 p-4"

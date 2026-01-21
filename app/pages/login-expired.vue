@@ -2,18 +2,15 @@
 // Seite für abgelaufene Magic Links
 
 definePageMeta({
-    // Keine Auth-Middleware hier
 });
 
 const route = useRoute();
 
-// Form State
 const email = ref('');
 const loading = ref(false);
 const error = ref<string | null>(null);
 const success = ref(false);
 
-// E-Mail aus URL-Parameter übernehmen falls vorhanden
 onMounted(() => {
     if (route.query.email) {
         email.value = route.query.email as string;

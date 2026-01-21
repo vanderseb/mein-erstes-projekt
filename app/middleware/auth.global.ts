@@ -1,5 +1,4 @@
-// middleware/auth.ts
-// Schuetzt Routen basierend auf User-Rolle
+// Schützt Routen basierend auf User-Rolle
 
 export default defineNuxtRouteMiddleware((to) => {
     const user = useSupabaseUser();
@@ -15,7 +14,7 @@ export default defineNuxtRouteMiddleware((to) => {
         }
     }
 
-    // /account (außer confirm) - nur eingeloggte User
+    // /account - nur eingeloggte User
     if (to.path.startsWith('/account') && !to.path.includes('/confirm')) {
         if (!user.value) {
             return navigateTo('/login');

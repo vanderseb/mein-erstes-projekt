@@ -9,7 +9,6 @@ const { adminFields } = useQuestions();
 const { evilScore, finalExpertise, selectedAttributes } = useQuizState();
 const { createApplication } = useApplications();
 
-// --- STATE ---
 const jobId = route.query.jobId as string | undefined;
 const fromQuiz = route.query.fromQuiz === 'true';
 
@@ -20,7 +19,6 @@ const showAdminForm = ref(false);
 const adminData = ref<Record<string, any>>({});
 const errors = ref<Record<string, string>>({});
 
-// --- COMPUTED ---
 const pageTitle = computed(() => {
   if (job.value) return `Bewerbung für: ${job.value.title}`;
   return 'Evil Assessment Center';
@@ -31,22 +29,17 @@ const pageSubtitle = computed(() => {
   return 'Finde heraus, welcher Job zu dir passt.';
 });
 
-// --- INIT ---
 onMounted(async () => {
   if (jobId) {
-    // Mode: Direktbewerbung (oder aus Quiz-Ergebnis gewählt)
     job.value = await getJobById(jobId);
     
-    // Wenn wir vom Quiz kommen, überspringen wir das Spiel
     if (fromQuiz) {
       showAdminForm.value = true;
     }
   }
-  // Mode: Allgemeines Quiz (kein Job geladen)
   loading.value = false;
 });
 
-// --- HELPER ---
 
 // Datum von DD.MM.YYYY zu YYYY-MM-DD konvertieren
 const convertDateToISO = (dateStr: string): string => {
@@ -55,15 +48,13 @@ const convertDateToISO = (dateStr: string): string => {
   return `${parts[2]}-${parts[1]}-${parts[0]}`;
 };
 
-// --- HANDLER ---
-
-// Wenn Spiel beendet
+// Wenn Spiel zu Ende
 const onGameComplete = () => {
   if (job.value) {
-    // Wenn wir einen Job haben, geht's zum Formular
+    // Direktbewerbung
     showAdminForm.value = true;
   } else {
-    // Wenn wir KEINEN Job haben (Quiz Mode), geht's zum Ergebnis
+    // Über Quiz-Ergebnis
     router.push('/assessment/result');
   }
 };
@@ -74,34 +65,30 @@ const handleFileUpload = (event: Event, field: any) => {
   const file = target.files?.[0];
   
   if (file) {
-    // Validierung: Größe
+    // Größenprüfung
     if (field.maxSize && file.size > field.maxSize) {
       errors.value[field.id] = field.errorMessage || 'Datei ist zu groß.';
       adminData.value[field.id] = null;
       return;
     }
-    // Validierung: Typ (einfacher Check)
+    // Typprüfung
     if (field.accept && !file.type.match(field.accept.replace('*', '.*'))) {
       errors.value[field.id] = field.errorMessage || 'Falsches Dateiformat.';
       adminData.value[field.id] = null;
       return;
     }
 
-    // Alles ok
     errors.value[field.id] = '';
     adminData.value[field.id] = file;
   }
 };
 
-// Formular Absenden
 const submitApplication = async () => {
   if (!job.value || submitting.value) return; 
 
-  // Reset Errors
   errors.value = {};
   let isValid = true;
 
-  // Validierung aller Felder
   for (const field of adminFields) {
     const value = adminData.value[field.id];
 
@@ -112,7 +99,7 @@ const submitApplication = async () => {
       continue;
     }
 
-    // 2. Pattern Check (für Text/Number inputs)
+    // 2. Pattern Check
     if (field.pattern && typeof value === 'string') {
       const regex = new RegExp(field.pattern);
       if (!regex.test(value)) {
@@ -169,7 +156,7 @@ const submitApplication = async () => {
         </ContentCard>
       </template>
 
-      <!-- Main Content -->
+      <!-- Content -->
       <template v-else>
         <ContentCard padding="lg">
           
@@ -185,12 +172,12 @@ const submitApplication = async () => {
             </template>
           </div>
 
-          <!-- 1. SPIEL (Wenn Formular noch nicht aktiv) -->
+          <!-- 1. Spiel abschließen -->
           <div v-if="!showAdminForm">
             <QuizGame @complete="onGameComplete" />
           </div>
 
-          <!-- 2. ADMIN FORMULAR (Nur wenn Job bekannt und Spiel fertig/übersprungen) -->
+          <!-- 2. Admin Formular -->
           <div v-else>
             <h3 class="text-white text-lg mb-6">Letzter Schritt: Deine Daten</h3>
             
@@ -200,7 +187,6 @@ const submitApplication = async () => {
                   {{ field.label }} <span v-if="errors[field.id]" class="text-evil-red text-xs ml-2">{{ errors[field.id] }}</span>
                 </label>
                 
-                <!-- File Input -->
                 <input 
                   v-if="field.type === 'file'"
                   type="file"
@@ -209,7 +195,6 @@ const submitApplication = async () => {
                   class="w-full text-evil-light file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-evil-red file:text-white hover:file:bg-evil-red/80 cursor-pointer text-sm"
                 />
 
-                <!-- Text/Number Input -->
                 <input 
                   v-else
                   v-model="adminData[field.id]"

@@ -13,17 +13,15 @@ export const useQuizState = () => {
     // --- PHASE 1: Evil Score ---
     const evilScore = useState<number>('evilScore', () => 0);
 
-    // --- PHASE 2: Expertise Funnel ---
+    // --- PHASE 2: Funnel für Expertise ---
     const remainingExpertises = useState<Expertise[]>('remainingExpertises',
         () => ['Digital', 'Social_Engineering', 'Heavy_Machinery', 'Economy']);
 
-    // Die finale Expertise nach Phase 2
     const finalExpertise = useState<Expertise | null>('finalExpertise', () => null);
 
-    // Die nächste Expertise-Frage ID (für den adaptiven Flow)
     const nextExpertiseQuestionId = useState<string>('nextExpertiseQuestionId', () => 'e1');
 
-    // --- PHASE 3: Gewählte Attribute (für Tie-Breaker) ---
+    // --- PHASE 3: Gewählte Attribute ---
     const selectedAttributes = useState<{
         hierarchy: Hierarchy | null;
         approach: Approach | null;
@@ -34,18 +32,12 @@ export const useQuizState = () => {
         risk: null
     }));
 
-    // --- CURRENT PHASE ---
     const currentPhase = useState<QuizPhase>('currentPhase', () => 1);
 
-    // --- PHASE 1 TRACKING ---
     const phase1QuestionIndex = useState<number>('phase1QuestionIndex', () => 0);
 
-    // --- PHASE 3 TRACKING ---
     const phase3QuestionsAsked = useState<string[]>('phase3QuestionsAsked', () => []);
 
-    // =============================================
-    // RESET FUNKTION
-    // =============================================
     const resetScores = () => {
         evilScore.value = 0;
         remainingExpertises.value = ['Digital', 'Social_Engineering', 'Heavy_Machinery', 'Economy'];
@@ -61,16 +53,10 @@ export const useQuizState = () => {
         phase3QuestionsAsked.value = [];
     };
 
-    // =============================================
-    // PHASE 1: Personality Answer Processing
-    // =============================================
     const processPersonalityAnswer = (answer: PersonalityAnswer) => {
         evilScore.value += answer.evilPoints;
     };
 
-    // =============================================
-    // PHASE 2: Expertise Answer Processing
-    // =============================================
     const processExpertiseAnswer = (answer: ExpertiseAnswer) => {
         // Entferne die verworfenen Expertisen
         remainingExpertises.value = remainingExpertises.value.filter(
@@ -82,17 +68,14 @@ export const useQuizState = () => {
             finalExpertise.value = remainingExpertises.value[0]!;
         }
 
-        // Setze die nächste Frage-ID (wenn vorhanden)
+        // Nächste Frage-ID
         if (answer.next) {
             nextExpertiseQuestionId.value = answer.next;
         }
     };
 
-    // =============================================
-    // PHASE 3: Discriminator Answer Processing
-    // =============================================
     const processDiscriminatorAnswer = (answer: DiscriminatorAnswer) => {
-        // Speichere die gewählten Attribute direkt
+        // Gewählte Attribute
         if (answer.hierarchy) {
             selectedAttributes.value.hierarchy = answer.hierarchy;
         }
@@ -104,10 +87,7 @@ export const useQuizState = () => {
         }
     };
 
-    // =============================================
-    // PHASE MANAGEMENT
-    // =============================================
-
+    // Phasen-Durchlauf
     const advanceToPhase2 = () => {
         currentPhase.value = 2;
     };

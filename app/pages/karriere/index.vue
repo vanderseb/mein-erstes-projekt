@@ -1,14 +1,12 @@
 <script setup lang="ts">
 import type { Department } from '@/composables/useJobs';
 
-// Karriere-Übersicht
 const { jobs, loading, error, DEPARTMENT_LABELS, fetchJobs } = useJobs();
 const route = useRoute();
 
-// Jobs laden beim Seitenaufruf
 await fetchJobs();
 
-// Filter State - prüfe auf Query-Parameter
+// Filter State - prüfe auf Department
 const getInitialDepartment = (): Department | 'all' => {
     const dept = route.query.department as string;
     if (dept && Object.keys(DEPARTMENT_LABELS).includes(dept)) {
@@ -19,7 +17,6 @@ const getInitialDepartment = (): Department | 'all' => {
 
 const selectedDepartment = ref<Department | 'all'>(getInitialDepartment());
 
-// Auto-Scroll zu Positionen wenn Filter aktiv
 onMounted(() => {
     if (route.query.department) {
         // Kurz warten bis die Seite gerendert ist
@@ -29,7 +26,6 @@ onMounted(() => {
     }
 });
 
-// Gefilterte Jobs
 const filteredJobs = computed(() => {
     if (selectedDepartment.value === 'all') {
         return jobs.value;
@@ -51,7 +47,7 @@ const departments = Object.entries(DEPARTMENT_LABELS) as [Department, string][];
       :full-height="true"
     />
 
-    <!-- Evil Score CTA -->
+    <!-- Quiz CTA -->
     <section class="py-12 px-4">
       <div class="max-w-4xl mx-auto">
         <ContentCard padding="lg" class="text-center">
@@ -78,7 +74,6 @@ const departments = Object.entries(DEPARTMENT_LABELS) as [Department, string][];
         <!-- Department Filter -->
         <div class="mb-8">
           <div class="flex flex-wrap justify-center gap-2">
-            <!-- Alle Button -->
             <button
               @click="selectedDepartment = 'all'"
               :class="[
@@ -107,7 +102,7 @@ const departments = Object.entries(DEPARTMENT_LABELS) as [Department, string][];
             </button>
           </div>
           
-          <!-- Ergebnis-Anzahl -->
+            <!-- Anzahl der gefundenen Positionen -->
           <p class="text-center text-evil-mid text-sm mt-4">
             {{ filteredJobs.length }} {{ filteredJobs.length === 1 ? 'Position' : 'Positionen' }} gefunden
           </p>
@@ -121,7 +116,7 @@ const departments = Object.entries(DEPARTMENT_LABELS) as [Department, string][];
             :key="job.job_id" 
             class="flex flex-col hover:border-evil-light/40 transition-colors"
           >
-            <!-- Department Badge -->
+            <!-- Department Label -->
             <span class="inline-block text-xs font-bold uppercase tracking-wider text-evil-red bg-evil-red/10 px-3 py-1 rounded-evil mb-4 self-start">
               {{ DEPARTMENT_LABELS[job.department] }}
             </span>

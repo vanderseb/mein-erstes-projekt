@@ -1,12 +1,10 @@
 <script setup lang="ts">
 // Shared Component for the Quiz Flow
-// Used in both /quiz/index.vue and /bewerbung/[id].vue
 
 const emit = defineEmits<{
   (e: 'complete'): void
 }>();
 
-// Initialize Quiz Flow
 const { 
   currentQuestion, 
   progress, 

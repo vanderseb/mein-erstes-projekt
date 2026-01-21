@@ -2,11 +2,9 @@
 const supabase = useSupabaseClient();
 const route = useRoute();
 
-// State-Machine: 'email' | 'password' | 'magic-link-sent' | 'unknown'
 type LoginStep = 'email' | 'password' | 'magic-link-sent' | 'unknown';
 const step = ref<LoginStep>('email');
 
-// Form State
 const email = ref('');
 const password = ref('');
 const loading = ref(false);
@@ -16,7 +14,7 @@ const error = ref<string | null>(null);
 const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const emailErrorMessage = 'Bitte gib eine gültige E-Mail-Adresse ein (z.B. name@beispiel.de).';
 
-// Check for error from middleware redirect
+// Prüfung auf Fehler aus Middleware
 onMounted(() => {
     if (route.query.error === 'unauthorized') {
         error.value = 'Zugriff verweigert. Bitte melde dich mit einem berechtigten Account an.';
@@ -60,7 +58,6 @@ const checkEmail = async () => {
     loading.value = false;
 };
 
-// Magic Link senden (über Server-Endpunkt mit Resend)
 const sendMagicLink = async () => {
     try {
         const result = await $fetch<{ success: boolean; message: string }>('/api/request-magic-link', {
@@ -79,14 +76,13 @@ const sendMagicLink = async () => {
     }
 };
 
-// HR Login mit Passwort
+// Admin Login mit Passwort
 const loginHr = async () => {
     if (!password.value) {
         error.value = 'Bitte Passwort eingeben.';
         return;
     }
 
-    // Prüfe ob email noch gesetzt ist (kann bei HMR verloren gehen)
     if (!email.value) {
         error.value = 'E-Mail-Adresse fehlt. Bitte starte den Login erneut.';
         step.value = 'email';
@@ -108,7 +104,6 @@ const loginHr = async () => {
             return;
         }
 
-        // Prüfe HR-Rolle nochmal zur Sicherheit
         const role = data.user?.app_metadata?.role;
         
         if (role !== 'admin') {
@@ -118,7 +113,6 @@ const loginHr = async () => {
             return;
         }
 
-        // Harte Navigation für mehr Zuverlässigkeit
         window.location.href = '/dashboard';
     } catch (err: any) {
         error.value = 'Unerwarteter Fehler: ' + err.message;
@@ -180,7 +174,7 @@ const resetToEmail = () => {
           </form>
         </template>
 
-        <!-- SCHRITT 2: HR Passwort eingeben -->
+        <!-- SCHRITT 2: Admin Passwort eingeben -->
         <template v-else-if="step === 'password'">
           <form @submit.prevent="loginHr" class="space-y-4">
             <div>
@@ -227,7 +221,7 @@ const resetToEmail = () => {
           </form>
         </template>
 
-        <!-- SCHRITT 3: Magic Link gesendet (Applicant) -->
+        <!-- SCHRITT 3: Magic Link gesendet (Bewerber) -->
         <template v-else-if="step === 'magic-link-sent'">
           <div class="text-center space-y-6">
             <div>

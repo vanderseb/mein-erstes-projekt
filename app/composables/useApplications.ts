@@ -21,7 +21,7 @@ export interface Application {
     cv: string | null;
 }
 
-// Input-Typ für neue Bewerbungen (ohne auto-generierte Felder)
+// Input-Typ für neue Bewerbungen
 export interface CreateApplicationInput {
     job_id: number;
     job_title: string; // Für E-Mail-Benachrichtigungen
@@ -41,12 +41,10 @@ export interface CreateApplicationInput {
 export const useApplications = () => {
     const supabase = useSupabaseClient();
 
-    // Reaktive States
     const applications = ref<Application[]>([]);
     const loading = ref(false);
     const error = ref<string | null>(null);
 
-    // Alle Bewerbungen laden
     const fetchApplications = async () => {
         loading.value = true;
         error.value = null;
@@ -66,7 +64,6 @@ export const useApplications = () => {
         loading.value = false;
     };
 
-    // Einzelne Bewerbung nach ID laden
     const getApplicationById = async (id: number): Promise<Application | null> => {
         const { data, error: fetchError } = await supabase
             .from('applications')
@@ -82,21 +79,20 @@ export const useApplications = () => {
         return data as Application;
     };
 
-    // Neue Bewerbung erstellen (via Server-API mit User-Erstellung + Magic Link)
+    // Neue Bewerbung erstellen (User-Erstellung + Magic Link)
     const createApplication = async (input: CreateApplicationInput): Promise<{ success: boolean; error?: string }> => {
-        // CV als Base64 konvertieren falls vorhanden
+
         let cvBase64: string | null = null;
         let cvFileName: string | null = null;
 
         if (input.cv_file) {
             cvFileName = `${Date.now()}_${input.first_name}_${input.last_name}.${input.cv_file.name.split('.').pop()}`;
 
-            // File zu Base64 konvertieren (mit FileReader für große Dateien)
+            // File zu Base64 konvertieren
             cvBase64 = await new Promise<string>((resolve, reject) => {
                 const reader = new FileReader();
                 reader.onload = () => {
                     const result = reader.result as string;
-                    // Data URL Format: "data:application/pdf;base64,..." - nur Base64-Teil extrahieren
                     const base64 = result.split(',')[1] ?? '';
                     resolve(base64);
                 };
@@ -137,7 +133,8 @@ export const useApplications = () => {
         }
     };
 
-    // Status einer Bewerbung aktualisieren (via Server-API mit E-Mail-Versand)
+    // Bewerbungsstatus aktualisieren (mit E-Mail-Versand)
+
     const updateStatus = async (applicationId: number, newStatus: ApplicationStatus) => {
         try {
             await $fetch('/api/applications-status', {
@@ -145,7 +142,6 @@ export const useApplications = () => {
                 body: { applicationId, newStatus }
             });
 
-            // Lokalen State aktualisieren
             const app = applications.value.find(a => a.application_id === applicationId);
             if (app) {
                 app.status = newStatus;
@@ -157,7 +153,6 @@ export const useApplications = () => {
         }
     };
 
-    // Bulk-Status für mehrere Bewerbungen aktualisieren (via Server-API mit E-Mail-Versand)
     const updateBulkStatus = async (ids: number[], newStatus: ApplicationStatus): Promise<boolean> => {
         try {
             // Jede Bewerbung einzeln aktualisieren (für individuelle E-Mails)
@@ -173,7 +168,6 @@ export const useApplications = () => {
                 )
             );
 
-            // Lokalen State aktualisieren
             applications.value.forEach(app => {
                 if (ids.includes(app.application_id)) {
                     app.status = newStatus;
@@ -188,7 +182,7 @@ export const useApplications = () => {
         }
     };
 
-    // Bewerbungen löschen (via Server-API mit E-Mail-Versand)
+    // Bewerbungen löschen (mit E-Mail-Versand)
     const deleteApplications = async (ids: number[]): Promise<{ success: boolean; error?: string }> => {
         try {
             await $fetch('/api/applications-delete', {
@@ -196,7 +190,6 @@ export const useApplications = () => {
                 body: { applicationIds: ids }
             });
 
-            // Lokalen State aktualisieren
             applications.value = applications.value.filter(
                 app => !ids.includes(app.application_id)
             );

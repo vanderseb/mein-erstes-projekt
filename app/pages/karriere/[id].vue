@@ -5,7 +5,6 @@ const { getJobById, getDepartmentLabel } = useJobs();
 // Job-ID aus der URL
 const jobId = route.params.id as string;
 
-// Job async laden
 const job = ref<Awaited<ReturnType<typeof getJobById>>>(null);
 const loading = ref(true);
 
@@ -19,7 +18,6 @@ const heroImage = computed(() =>
     job.value ? `/design/assets/images/${job.value.department}.webp` : ''
 );
 
-// Department-Label für die Anzeige
 const departmentLabel = computed(() => 
     job.value ? getDepartmentLabel(job.value.department) : ''
 );
@@ -40,7 +38,6 @@ const departmentLabel = computed(() =>
     <!-- Job gefunden -->
     <template v-else-if="job">
       
-      <!-- Hero mit Department-spezifischem Bild -->
       <HeroSection 
         :image="heroImage"
         :title="job.title!"
@@ -67,10 +64,8 @@ const departmentLabel = computed(() =>
             </p>
           </ContentCard>
 
-          <!-- Tasks & Skills Grid -->
           <div class="grid md:grid-cols-2 gap-6 mb-12">
             
-            <!-- Aufgaben -->
             <ContentCard>
               <h3 class="text-white text-xl mb-4 flex items-center gap-3">
                 <span class="text-2xl">📋</span> Deine Missionen
@@ -87,7 +82,6 @@ const departmentLabel = computed(() =>
               </ul>
             </ContentCard>
 
-            <!-- Skills -->
             <ContentCard>
               <h3 class="text-white text-xl mb-4 flex items-center gap-3">
                 <span class="text-2xl">🧠</span> Das bringst du mit

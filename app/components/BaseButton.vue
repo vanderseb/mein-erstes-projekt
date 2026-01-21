@@ -1,5 +1,5 @@
 <script setup lang="ts">
-// Props für die Button-Varianten
+// Button-Varianten
 defineProps<{
   variant?: 'primary' | 'secondary'
   href?: string

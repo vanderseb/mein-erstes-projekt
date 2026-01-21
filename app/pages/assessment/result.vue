@@ -3,19 +3,16 @@ const { jobs, getJobsByExpertise } = useJobs();
 const { evilScore, finalExpertise, selectedAttributes } = useQuizState();
 const { findBestJob, calculateJobMatches } = useJobMatching();
 
-// Jobs die zur ermittelten Expertise passen
 const matchingJobs = computed(() => {
-    if (!finalExpertise.value) return jobs.value; // Fallback: alle Jobs (unwrapped)
+    if (!finalExpertise.value) return jobs.value; // Fallback: alle Jobs
     return getJobsByExpertise(finalExpertise.value);
 });
 
-// Der beste Job basierend auf dem Matching-Algorithmus
 const winner = computed(() => {
     if (matchingJobs.value.length === 0) return jobs.value[0]; // Fallback
     return findBestJob(matchingJobs.value, selectedAttributes.value);
 });
 
-// Rangliste aller passenden Jobs mit Übereinstimmungen
 const rankedJobs = computed(() => {
     return matchingJobs.value
         .map(job => ({
@@ -25,7 +22,6 @@ const rankedJobs = computed(() => {
         .sort((a, b) => b.matches - a.matches);
 });
 
-// Expertise Labels für die Anzeige
 const expertiseLabels: Record<string, string> = {
     'Digital': 'IT & Hacking',
     'Social_Engineering': 'Human Resources',
@@ -46,7 +42,7 @@ const expertiseLabels: Record<string, string> = {
         </p>
       </div>
 
-      <!-- Expertise Badge -->
+      <!-- Expertise Label -->
       <div v-if="finalExpertise" class="text-center">
         <span class="inline-block px-4 py-2 bg-evil-dark border border-evil-light/30 rounded-full text-evil-light text-sm">
           Dein Fachgebiet: <strong class="text-white">{{ expertiseLabels[finalExpertise] || finalExpertise }}</strong>
@@ -77,7 +73,7 @@ const expertiseLabels: Record<string, string> = {
         </BaseButton>
       </ContentCard>
 
-      <!-- Alternatives (nur wenn mehr als 1 Job) -->
+      <!-- Alternativen -->
       <ContentCard v-if="rankedJobs.length > 1">
         <p class="text-evil-mid text-xs uppercase tracking-wider font-bold mb-4">
           Alternative Positionen

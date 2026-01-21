@@ -1,8 +1,6 @@
 // composables/useQuestions.ts
 import type { Expertise, Hierarchy, Approach, Risk } from './useJobs';
 
-// --- Typ-Definitionen ---
-
 // Phase 1: Persönlichkeitsfragen (Evil Score)
 export interface PersonalityAnswer {
     label: string;
@@ -16,7 +14,7 @@ export interface PersonalityQuestion {
     options: PersonalityAnswer[];
 }
 
-// Phase 2: Expertise-Filter Fragen (Binäre Suche)
+// Phase 2: Fragen zur Expertise
 export interface ExpertiseAnswer {
     label: string;
     keep: Expertise[];
@@ -31,7 +29,7 @@ export interface ExpertiseQuestion {
     options: ExpertiseAnswer[];
 }
 
-// Phase 3: Discriminator Fragen (Tie-Breaker)
+// Phase 3: Discriminator Fragen
 export interface DiscriminatorAnswer {
     label: string;
     hierarchy?: Hierarchy;
@@ -43,11 +41,11 @@ export interface DiscriminatorQuestion {
     id: string;
     text: string;
     type: 'discriminator';
-    trigger: 'hierarchy' | 'approach' | 'risk'; // Welches Attribut diese Frage unterscheidet
+    trigger: 'hierarchy' | 'approach' | 'risk';
     options: DiscriminatorAnswer[];
 }
 
-// Admin-Felder für Bewerbungsformular
+// Bewerbungsformular
 export interface AdminField {
     id: string;
     label: string;
@@ -55,8 +53,8 @@ export interface AdminField {
     type: 'text' | 'email' | 'number' | 'file';
     pattern?: string; // Regex Pattern für Validierung
     accept?: string;  // Für Dateiuploads
-    maxSize?: number; // Max Bytes für Uploads
-    errorMessage?: string; // Fehlertext bei ungültiger Eingabe
+    maxSize?: number;
+    errorMessage?: string;
 }
 
 export const useQuestions = () => {
@@ -95,7 +93,7 @@ export const useQuestions = () => {
         }
     ];
 
-    // --- PHASE 2: Expertise-Filter Fragen (Adaptive Funnel) ---
+    // --- PHASE 2: Fragen zur Expertise ---
     const expertiseQuestions: ExpertiseQuestion[] = [
         {
             id: 'e1',
@@ -152,7 +150,7 @@ export const useQuestions = () => {
         }
     ];
 
-    // --- PHASE 3: Discriminator Fragen (Tie-Breaker) ---
+    // --- PHASE 3: Discriminator Fragen ---
     const discriminatorQuestions: DiscriminatorQuestion[] = [
         {
             id: 'd_hierarchy',
@@ -220,7 +218,7 @@ export const useQuestions = () => {
         }
     ];
 
-    // --- ADMIN-FELDER für Bewerbungsformular ---
+    // --- Bewerbungsformular ---
     const adminFields: AdminField[] = [
         {
             id: 'salary',
@@ -269,13 +267,10 @@ export const useQuestions = () => {
         }
     ];
 
-    // --- HELPER FUNKTIONEN ---
 
-    // Expertise-Frage nach ID finden
     const getExpertiseQuestionById = (id: string) =>
         expertiseQuestions.find(q => q.id === id);
 
-    // Discriminator-Frage nach Trigger finden
     const getDiscriminatorByTrigger = (trigger: 'hierarchy' | 'approach' | 'risk') =>
         discriminatorQuestions.find(q => q.trigger === trigger);
 

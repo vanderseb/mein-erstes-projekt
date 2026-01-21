@@ -6,13 +6,11 @@ import { getStatusLabel, getStatusColor, formatDate } from '@/composables/useApp
 const supabase = useSupabaseClient();
 const router = useRouter();
 
-// Logout
 const logout = async () => {
     await supabase.auth.signOut();
     router.push('/');
 };
 
-// Data
 const { 
     applications, 
     loading, 
@@ -30,17 +28,16 @@ const { jobs, fetchJobs } = useJobs();
 // Bewerbungen und Jobs laden
 await Promise.all([fetchApplications(), fetchJobs()]);
 
-// Selection State
+// Selection
 const selectedIds = ref<number[]>([]);
 const showDeleteConfirm = ref(false);
 
-// Filter States
+// Filter
 const filterJob = ref<string>('');
 const filterEvilScore = ref<string>('');
 const filterMatches = ref<string>('');
 const filterStatus = ref<string>('');
 
-// Computed: Unique job titles for filter
 const uniqueJobTitles = computed(() => {
     const titles = new Set<string>();
     applications.value.forEach(app => {
@@ -50,7 +47,6 @@ const uniqueJobTitles = computed(() => {
     return Array.from(titles).sort();
 });
 
-// Computed: Unique evil scores for filter
 const uniqueEvilScores = computed(() => {
     const scores = new Set<number>();
     applications.value.forEach(app => scores.add(app.evil_score));
@@ -83,7 +79,6 @@ const filteredApplications = computed(() => {
     return result;
 });
 
-// Check if all visible items are selected
 const allSelected = computed(() => {
     if (filteredApplications.value.length === 0) return false;
     return filteredApplications.value.every(app => selectedIds.value.includes(app.application_id));
@@ -194,7 +189,7 @@ const handleBulkDelete = async () => {
             <h2 class="text-white text-xl font-bold">Eingegangene Bewerbungen</h2>
           </div>
 
-          <!-- Bulk Actions Bar (appears when items selected) -->
+          <!-- Bulk Action Bar -->
           <div 
             v-if="selectedIds.length > 0" 
             class="mb-4 p-3 bg-evil-dark/50 border border-evil-light/20 rounded-evil-md flex flex-wrap items-center gap-3"
@@ -234,7 +229,7 @@ const handleBulkDelete = async () => {
             </div>
           </div>
 
-          <!-- Delete Confirmation Modal -->
+          <!-- Delete Confirmation Popup -->
           <div 
             v-if="showDeleteConfirm" 
             class="fixed inset-0 flex items-center justify-center z-50 p-4"
@@ -273,7 +268,7 @@ const handleBulkDelete = async () => {
             Fehler: {{ error }}
           </div>
 
-          <!-- Leere Liste -->
+          <!-- Empty List -->
           <div v-else-if="filteredApplications.length === 0" class="text-center py-12 text-evil-light/50">
             Keine Bewerbungen gefunden.
           </div>

@@ -27,7 +27,6 @@ interface ApplicationBody {
 export default defineEventHandler(async (event) => {
     const body = await readBody<ApplicationBody>(event);
 
-    // Validierung
     if (!body.email || !body.job_id || !body.first_name || !body.last_name) {
         throw createError({
             statusCode: 400,
@@ -35,7 +34,6 @@ export default defineEventHandler(async (event) => {
         });
     }
 
-    // Supabase Admin Client
     const supabaseAdmin = serverSupabaseServiceRole<Database>(event);
 
     // 1. User suchen oder erstellen
@@ -76,7 +74,7 @@ export default defineEventHandler(async (event) => {
         throw createError({ statusCode: 500, message: 'Interner Server-Fehler' });
     }
 
-    // 2. CV hochladen falls vorhanden (mit Service Role Key)
+    // 2. CV hochladen (mit Service Role Key)
     let cvUrl: string | null = null;
 
     if (body.cv_base64 && body.cv_filename) {

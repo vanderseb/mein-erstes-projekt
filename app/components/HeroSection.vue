@@ -17,7 +17,6 @@ const isSlider = computed(() => props.images && props.images.length > 1)
 const currentIndex = ref(0)
 let timer: ReturnType<typeof setInterval> | null = null
 
-// Timer stoppen und neu starten
 const resetTimer = () => {
   if (timer) clearInterval(timer)
   timer = setInterval(nextSlide, props.interval || 5000)
@@ -51,7 +50,7 @@ onUnmounted(() => {
 <template>
   <section class="w-full">
     
-    <!-- SLIDER-MODUS -->
+    <!-- Slider-Modus -->
     <div 
       v-if="isSlider && images"
       class="relative w-full overflow-hidden"
@@ -66,7 +65,7 @@ onUnmounted(() => {
         :style="{ backgroundImage: `url(${img})` }"
       />
 
-      <!-- Navigation Pfeile -->
+      <!-- Pfeile -->
       <button 
         @click="prevSlide"
         class="absolute left-4 top-1/2 -translate-y-1/2 z-20 w-12 h-12 bg-evil-dark/70 hover:bg-evil-red text-white rounded-full flex items-center justify-center transition-colors"
@@ -88,7 +87,7 @@ onUnmounted(() => {
       </button>
     </div>
 
-    <!-- STATISCHER MODUS -->
+    <!-- Statischer Modus -->
     <div 
       v-else
       class="w-full bg-cover bg-center bg-no-repeat"
@@ -109,7 +108,7 @@ onUnmounted(() => {
             {{ subtitle }}
           </p>
           
-          <!-- Slot für zusätzliche Inhalte (z.B. Buttons) -->
+          <!-- Extra Slot -->
           <div v-if="$slots.default" class="mt-6">
             <slot />
           </div>

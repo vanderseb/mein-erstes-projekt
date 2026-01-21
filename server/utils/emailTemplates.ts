@@ -83,9 +83,7 @@ const positionLine = (jobTitle: string) => `
         </p>
 `;
 
-// ============================================================
-// TEMPLATE 1: Bewerbung eingereicht
-// ============================================================
+// Template 1: Bewerbung eingereicht
 interface ApplicationSubmittedParams {
     firstName: string;
     jobTitle: string;
@@ -113,9 +111,7 @@ export const applicationSubmittedTemplate = ({ firstName, jobTitle, magicLink }:
     return baseTemplate(content);
 };
 
-// ============================================================
-// TEMPLATE 2: Status "In Bearbeitung"
-// ============================================================
+// Template 2: Status "In Bearbeitung"
 interface StatusInProgressParams {
     firstName: string;
     jobTitle: string;
@@ -143,9 +139,7 @@ export const statusInProgressTemplate = ({ firstName, jobTitle, magicLink }: Sta
     return baseTemplate(content);
 };
 
-// ============================================================
-// TEMPLATE 3: Status "Angenommen"
-// ============================================================
+// Template 3: Status "Angenommen"
 interface StatusAcceptedParams {
     firstName: string;
     jobTitle: string;
@@ -177,9 +171,7 @@ export const statusAcceptedTemplate = ({ firstName, jobTitle, magicLink }: Statu
     return baseTemplate(content);
 };
 
-// ============================================================
-// TEMPLATE 4: Status "Abgelehnt"
-// ============================================================
+// Template 4: Status "Abgelehnt"
 interface StatusRejectedParams {
     firstName: string;
     jobTitle: string;
@@ -206,9 +198,7 @@ export const statusRejectedTemplate = ({ firstName, jobTitle, magicLink }: Statu
     return baseTemplate(content);
 };
 
-// ============================================================
-// TEMPLATE 5: Status "Gelöscht" (DSGVO-Parodie)
-// ============================================================
+// Template 5: Status "Gelöscht"
 interface StatusDeletedParams {
     firstName: string;
     jobTitle: string;
@@ -245,9 +235,7 @@ export const statusDeletedTemplate = ({ firstName, jobTitle }: StatusDeletedPara
     return baseTemplate(content);
 };
 
-// ============================================================
-// TEMPLATE 6: Magic Link anfordern (für login-expired)
-// ============================================================
+// Template 6: Magic Link anfordern
 interface MagicLinkRequestedParams {
     firstName: string;
     magicLink: string;

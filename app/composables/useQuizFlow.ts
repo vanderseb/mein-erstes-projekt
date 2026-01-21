@@ -44,39 +44,34 @@ export const useQuizFlow = (options: QuizFlowOptions) => {
 
     const { findDifferentiatingAttributes } = useJobMatching();
 
-    // Reset beim Start (nur wenn autoReset nicht explizit false ist)
+    // Reset beim Start
     if (options.autoReset !== false) {
         onMounted(() => resetScores());
     }
-
-    // =============================================
-    // COMPUTED: Aktuelle Frage basierend auf Phase
-    // =============================================
 
     // Phase 1: Aktuelle Persönlichkeitsfrage
     const currentPersonalityQuestion = computed(() =>
         personalityQuestions[phase1QuestionIndex.value]
     );
 
-    // Phase 2: Aktuelle Expertise-Frage (adaptiv)
+    // Phase 2: Aktuelle Expertise-Frage
     const currentExpertiseQuestion = computed(() =>
         getExpertiseQuestionById(nextExpertiseQuestionId.value)
     );
 
-    // Phase 3: Verbleibende Jobs nach Expertise-Filter
+    // Phase 3: Verbleibende Jobs
     const remainingJobs = computed((): Job[] => {
         if (!finalExpertise.value) return [];
         return getJobsByExpertise(finalExpertise.value);
     });
 
-    // Phase 3: Nächste Discriminator-Frage
     const currentDiscriminatorQuestion = computed(() => {
         if (remainingJobs.value.length <= 1) return null;
 
         // Finde Attribute, die sich unterscheiden
         const differentiatingAttrs = findDifferentiatingAttributes(remainingJobs.value);
 
-        // Finde erste noch nicht gestellte Frage
+        // Finde noch nicht gestellte Frage
         for (const attr of differentiatingAttrs) {
             const question = getDiscriminatorByTrigger(attr);
             if (question && !isPhase3QuestionAsked(question.id)) {
@@ -87,7 +82,6 @@ export const useQuizFlow = (options: QuizFlowOptions) => {
         return null;
     });
 
-    // Generische aktuelle Frage für Template
     const currentQuestion = computed((): CurrentQuestion => {
         if (currentPhase.value === 1) return currentPersonalityQuestion.value ?? null;
         if (currentPhase.value === 2) return currentExpertiseQuestion.value ?? null;
@@ -95,24 +89,17 @@ export const useQuizFlow = (options: QuizFlowOptions) => {
         return null;
     });
 
-    // =============================================
-    // PROGRESS BERECHNUNG
-    // =============================================
-
     const progress = computed(() => {
         if (currentPhase.value === 1) {
-            // Phase 1: Anteil der Persönlichkeitsfragen
             return ((phase1QuestionIndex.value + 1) / personalityQuestions.length) * 33;
         }
         if (currentPhase.value === 2) {
-            // Phase 2: Abhängig von verbleibenden Expertisen
             const totalExpertises = 4;
             const remaining = remainingExpertises.value.length;
             const eliminated = totalExpertises - remaining;
             return 33 + (eliminated / (totalExpertises - 1)) * 33;
         }
         if (currentPhase.value === 3) {
-            // Phase 3: Abhängig von gestellten Fragen
             const totalPossible = 3; // max 3 Discriminator-Fragen
             const asked = phase3QuestionsAsked.value.length;
             return 66 + (asked / totalPossible) * 34;
@@ -120,10 +107,7 @@ export const useQuizFlow = (options: QuizFlowOptions) => {
         return 100;
     });
 
-    // =============================================
-    // ANSWER HANDLER
-    // =============================================
-
+    
     const selectAnswer = (option: QuizAnswer) => {
         if (currentPhase.value === 1) {
             processPersonalityAnswer(option as PersonalityAnswer);

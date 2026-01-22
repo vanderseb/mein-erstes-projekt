@@ -143,7 +143,7 @@ const submitApplication = async () => {
     if (errorTimeout) clearTimeout(errorTimeout);
     errorTimeout = setTimeout(() => {
       errorMessage.value = null;
-    }, 5000);
+    }, 10000);
   }
 };
 </script>

@@ -18,6 +18,8 @@ const submitting = ref(false);
 const showAdminForm = ref(false);
 const adminData = ref<Record<string, any>>({});
 const errors = ref<Record<string, string>>({});
+const errorMessage = ref<string | null>(null);
+let errorTimeout: ReturnType<typeof setTimeout> | null = null;
 
 const pageTitle = computed(() => {
   if (job.value) return `Bewerbung für: ${job.value.title}`;
@@ -137,8 +139,11 @@ const submitApplication = async () => {
   if (result.success) {
     router.push(`/assessment/success?email=${encodeURIComponent(adminData.value.email)}`);
   } else {
-    errors.value.submit = result.error || 'Ein Fehler ist aufgetreten.';
-    console.error('Submission error:', result.error);
+    errorMessage.value = result.error || 'Ein Fehler ist aufgetreten.';
+    if (errorTimeout) clearTimeout(errorTimeout);
+    errorTimeout = setTimeout(() => {
+      errorMessage.value = null;
+    }, 5000);
   }
 };
 </script>
@@ -147,6 +152,30 @@ const submitApplication = async () => {
 <template>
   <div class="min-h-screen py-12 px-4 flex items-center justify-center">
     <div class="max-w-xl w-full">
+
+      <!-- Error Pop Up -->
+      <Transition
+        enter-active-class="transition-all duration-300"
+        enter-from-class="translate-x-full opacity-0"
+        enter-to-class="translate-x-0 opacity-100"
+        leave-active-class="transition-all duration-300"
+        leave-from-class="translate-x-0 opacity-100"
+        leave-to-class="translate-x-full opacity-0"
+      >
+        <div 
+          v-if="errorMessage"
+          class="fixed bottom-6 right-6 bg-evil-red text-white px-6 py-4 rounded-evil-md shadow-lg max-w-sm z-50 flex items-center gap-3"
+        >
+          <span class="text-xl">❌</span>
+          <p class="text-sm flex-1">{{ errorMessage }}</p>
+          <button
+            @click="errorMessage = null"
+            class="text-white hover:text-gray-200 text-xl"
+          >
+            ✕
+          </button>
+        </div>
+      </Transition>
 
       <!-- Loading -->
       <template v-if="loading">
